@@ -10,21 +10,96 @@ const validateNum = (num) => {
 }
 
 const add = (num1, num2) => {
-    if (validateNum(num1) || validateNum(num2)) return "ERROR";
+    // if (validateNum(num1) || validateNum(num2)) return "ERROR";
+    num1 = Number.parseInt(num1);
+    num2 = Number.parseInt(num2);
     console.log(num1, num2, num1+num2);
     return num1 + num2;
 };
 
 const subtract = (num1, num2) => {
+    num1 = Number.parseInt(num1);
+    num2 = Number.parseInt(num2);
+    console.log(num1, num2, num1-num2);
     return num1 - num2;
 };
 
 const multiply = (num1, num2) => {
+    num1 = Number.parseInt(num1);
+    num2 = Number.parseInt(num2);
+    console.log(num1, num2, num1*num2);
     return num1 * num2;
 };
 
 const divide = (num1, num2) => {
+    num1 = Number.parseInt(num1);
+    num2 = Number.parseInt(num2);
+    console.log(num1, num2, num1/num2);
     return num1 / num2;
+};
+
+/**
+ * Forwards the math operation to the correct math function based on the operator
+ * @param {int} num1 
+ * @param {String} operator 
+ * @param {int} num2 
+ */
+const getMathAnswer = (parsedChoices) => {
+    console.log("parseChoices in get math answer: ", parsedChoices);
+    if (parsedChoices.length !== 3) {
+        return `ERROR: Cannot handle more than 2 numbers and one operator. Received: ${parsedChoices}`;
+    }
+
+    // Add a try except around getting the nums and operator out
+    const num1 = parsedChoices[0];
+    const operator = parsedChoices[1];
+    const num2 = parsedChoices[2];
+
+    switch (operator) {
+        case OPERATORS[0]:
+            // +
+            return add(num1, num2);
+        case OPERATORS[1]:
+            // -
+            return subtract(num1, num2);
+        case OPERATORS[2]:
+            // *
+            return multiply(num1, num2);
+        case OPERATORS[3]:
+            // /
+            return divide(num1, num2);
+        default:
+            console.log("Big errors bro! We didn't match an operator!!");
+            return `ERROR determining math function to forward ${num1} and ${num2} to with operator ${operator}`;
+    }
+};
+
+const parseInputNodesToString = (choiceArr) => {
+    // Transform the dom nodes into a single string to parse
+    const choiceStr = choiceArr.reduce((acc, cur) => {
+        return acc + cur.textContent;
+    }, "");
+    console.log("choiceStr after joining: ", choiceStr);
+
+    // Iterate through the string and check the numbers until you get a symbol
+    let num1 = "";
+    let operator = "";
+    let num2 = "";
+    for (const char of choiceStr) {
+        // if the char is not an operator, concatenate onto num
+        if (!OPERATORS.includes(char)) {
+            if (operator.length === 0) {
+                // Slap the char on the first number if the operator hasn't been defined yet
+                num1 += char;
+            } else {
+                num2 += char;
+            }
+        } else {
+            operator += char;
+        }
+    }
+    console.log(`${num1} ${operator} ${num2}`);
+    return [num1, operator, num2];
 };
 
 /**
@@ -50,49 +125,41 @@ const getUserInputFromScreen = () => {
     // grab all the numbers off the screen
     const userChoices = document.querySelectorAll("#inputVal");
     const choiceArr = [...userChoices];
+    
+    const parsedChoices = parseInputNodesToString(choiceArr);
 
-    // Transform the dom nodes into a single string to parse
-    const choiceStr = choiceArr.reduce((acc, cur) => {
-        return acc + cur.textContent;
-    }, "");
-    console.log("choiceStr after joining: ", choiceStr);
+    const answer = getMathAnswer(parsedChoices);
 
-    // Iterate through the string and check the numbers until you get a symbol
-    let num1 = "";
-    let operator = "";
-    let num2 = "";
-    for (const char of choiceStr) {
-        // if the char is not an operator, concatenate onto num
-        if (!OPERATORS.includes(char)) {
-            if (operator.length === 0) {
-                // Slap the char on the first number if the operator hasn't been defined yet
-                num1 += char;
-            } else {
-                num2 += char;
-            }
-        } else {
-            operator += char;
-        }
-    }
-    console.log(`${num1} ${operator} ${num2}`);
-    let answer = -1;
-    switch (operator) {
-        case OPERATORS[0]:
-            // +
+    console.log("answer: ", answer);
 
-            break;
-        case OPERATORS[1]:
-            // -
-            break;
-        case OPERATORS[2]:
-            // *
-            break;
-        case OPERATORS[3]:
-            // /
-            break;
-        default:
-            console.log("Big errors bro! We didn't match an operator!!");
-    }
+    // // Transform the dom nodes into a single string to parse
+    // const choiceStr = choiceArr.reduce((acc, cur) => {
+    //     return acc + cur.textContent;
+    // }, "");
+    // console.log("choiceStr after joining: ", choiceStr);
+
+    // // Iterate through the string and check the numbers until you get a symbol
+    // let num1 = "";
+    // let operator = "";
+    // let num2 = "";
+    // for (const char of choiceStr) {
+    //     // if the char is not an operator, concatenate onto num
+    //     if (!OPERATORS.includes(char)) {
+    //         if (operator.length === 0) {
+    //             // Slap the char on the first number if the operator hasn't been defined yet
+    //             num1 += char;
+    //         } else {
+    //             num2 += char;
+    //         }
+    //     } else {
+    //         operator += char;
+    //     }
+    // }
+    // console.log(`${num1} ${operator} ${num2}`);
+    
+    // let answer = getMathAnswer(num1, operator, num2);
+
+
 }
 
 /**
