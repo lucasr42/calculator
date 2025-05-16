@@ -13,28 +13,24 @@ const add = (num1, num2) => {
     // if (validateNum(num1) || validateNum(num2)) return "ERROR";
     num1 = Number.parseInt(num1);
     num2 = Number.parseInt(num2);
-    console.log(num1, num2, num1+num2);
     return num1 + num2;
 };
 
 const subtract = (num1, num2) => {
     num1 = Number.parseInt(num1);
     num2 = Number.parseInt(num2);
-    console.log(num1, num2, num1-num2);
     return num1 - num2;
 };
 
 const multiply = (num1, num2) => {
     num1 = Number.parseInt(num1);
     num2 = Number.parseInt(num2);
-    console.log(num1, num2, num1*num2);
     return num1 * num2;
 };
 
 const divide = (num1, num2) => {
     num1 = Number.parseInt(num1);
     num2 = Number.parseInt(num2);
-    console.log(num1, num2, num1/num2);
     return num1 / num2;
 };
 
@@ -45,7 +41,6 @@ const divide = (num1, num2) => {
  * @param {int} num2 
  */
 const getMathAnswer = (parsedChoices) => {
-    console.log("parseChoices in get math answer: ", parsedChoices);
     if (parsedChoices.length !== 3) {
         return `ERROR: Cannot handle more than 2 numbers and one operator. Received: ${parsedChoices}`;
     }
@@ -88,7 +83,6 @@ const parseInputNodesToString = (choiceArr) => {
     const choiceStr = choiceArr.reduce((acc, cur) => {
         return acc + cur.textContent;
     }, "");
-    console.log("choiceStr after joining: ", choiceStr);
 
     // Iterate through the string and check the numbers until you get a symbol
     let num1 = "";
@@ -107,7 +101,7 @@ const parseInputNodesToString = (choiceArr) => {
             operator += char;
         }
     }
-    console.log(`${num1} ${operator} ${num2}`);
+    
     return [num1, operator, num2];
 };
 
@@ -130,7 +124,7 @@ const addUserInputToScreen = (input) => {
  * 
  * This function needs to also trigger the actual math functions
  */
-const getUserInputFromScreen = () => {
+const handleEqualSign = () => {
     // grab all the numbers off the screen
     const userChoices = document.querySelectorAll("#inputVal");
     const choiceArr = [...userChoices];
@@ -139,14 +133,20 @@ const getUserInputFromScreen = () => {
 
     const answer = getMathAnswer(parsedChoices);
 
-    console.log("answer: ", answer);
-
     const userInputDiv = document.querySelector("#userInput");
-    const ansOutput = document.createElement("div");
+    const ansOutput = document.createElement("span");
     ansOutput.id = "ansOutput";
     ansOutput.textContent = " = " + answer;
     userInputDiv.appendChild(ansOutput);
+}
 
+const handleClearClick = () => {
+    const userInputVals = document.querySelectorAll("#inputVal");
+    const ansOutput = document.querySelector("#ansOutput");
+    const input = [...userInputVals, ansOutput];
+    input.forEach((val) => {
+        val.parentElement.removeChild(val);
+    })
 }
 
 /**
@@ -170,6 +170,14 @@ const buildNums = () => {
             button.addEventListener("click", addUserInputToScreen);
 
             numberBoard.appendChild(button);
+
+            if (num === 3) {
+                const clearButton = document.createElement("button");
+                clearButton.id = "clear";
+                clearButton.textContent = "C";
+                clearButton.addEventListener("click", handleClearClick);
+                numberBoard.appendChild(clearButton);
+            }
             num++;
         }
         const lineBreak = document.createElement("br");
@@ -191,7 +199,7 @@ const buildNums = () => {
     const equalButton = document.createElement("button");
     equalButton.id = "equals";
     equalButton.textContent = "=";
-    equalButton.addEventListener("click", getUserInputFromScreen);
+    equalButton.addEventListener("click", handleEqualSign);
     numberBoard.appendChild(equalButton);
 }
 
