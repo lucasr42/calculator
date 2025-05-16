@@ -159,31 +159,16 @@ const buildNums = () => {
     const numberBoard = document.querySelector("#numberBoard");
     
     // Build the number board
-    for (let i = 0; i < 3; i++) {
-        for (let j = 1; j <= 3; j++) {
-            const button = document.createElement("button");
-            buttonclassName = "number";
-            button.id = num;
-            button.textContent = num;
+    for (let i = 0; i < 9; i++) {
+        const button = document.createElement("button");
+        buttonclassName = "number";
+        button.id = i;
+        button.textContent = i;
+        button.addEventListener("click", addUserInputToScreen);
 
-            // Add the click event listener
-            button.addEventListener("click", addUserInputToScreen);
-
-            numberBoard.appendChild(button);
-
-            if (num === 3) {
-                const clearButton = document.createElement("button");
-                clearButton.id = "clear";
-                clearButton.textContent = "C";
-                clearButton.addEventListener("click", handleClearClick);
-                numberBoard.appendChild(clearButton);
-            }
-            num++;
-        }
-        const lineBreak = document.createElement("br");
-        numberBoard.appendChild(lineBreak);
+        numberBoard.appendChild(button);
     }
-    
+
     // Add the operators to the calculator board
     operators.forEach((operator) => {
         const operatorButton = document.createElement("button");
@@ -201,6 +186,13 @@ const buildNums = () => {
     equalButton.textContent = "=";
     equalButton.addEventListener("click", handleEqualSign);
     numberBoard.appendChild(equalButton);
+
+    // Add the clear button
+    const clearButton = document.createElement("button");
+    clearButton.id = "clear";
+    clearButton.textContent = "C";
+    clearButton.addEventListener("click", handleClearClick);
+    numberBoard.appendChild(clearButton);
 }
 
 buildNums();
