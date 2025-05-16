@@ -1,4 +1,5 @@
 const OPERATORS = ["+", "-", "*", "/"];
+const OPERATOR_CHOSEN = false;
 const userInput = [];
 
 const validateNum = (num) => {
@@ -106,16 +107,40 @@ const parseInputNodesToString = (choiceArr) => {
 };
 
 /**
- * Number and operator onClick handler
+ * Number onClick handler
  * Adds the number or operator clicked by the user to the screen
- * @param {Obj} input Event object for onclick to access the number or operator
+ * @param {Obj} input Event object for onclick to access the number
  */
-const addUserInputToScreen = (input) => {
+const handleNumberClick = (input) => {
+
     const inputDiv = document.querySelector("#userInput");
     const inputVal = document.createElement("span");
     inputVal.textContent = input.target.textContent;
     inputVal.id = "inputVal";
     inputDiv.appendChild(inputVal);
+}
+
+/**
+ * Operator onClick handler
+ * Sends calculation as if an equal sign was clicked when the operator is the second operator chosen
+ * Then outputs the result to the screen with the new operator and the result as the left operand
+ * @param {Obj} operator Event object for operator click
+ */
+const handleOperatorClick = (operator) => {
+    // Only allow 1 operator to be chosen before doing the calculation
+    if (OPERATORS.includes(input.target.textContent) && !OPERATOR_CHOSEN) {
+        OPERATOR_CHOSEN = true;
+        const inputDiv = document.querySelector("#userInput");
+        const inputOperator = document.createElement("span");
+        inputOperator.textContent = operator.target.textContent;
+        inputOperator.id = "inputVal";
+        inputDiv.appendCihld(inputOperator);
+    } else if (OPERATORS.includes(input.target.textContent) && OPERATOR_CHOSEN) {
+        // When the user hits a second operator, we need to do the operation
+        // Return the result here and put that result on the screen
+        // Along with the second operator, using the result as the left operand for the next calculation
+
+    }
 }
 
 /**
@@ -168,7 +193,7 @@ const buildNums = () => {
         buttonclassName = "number";
         button.id = i;
         button.textContent = i;
-        button.addEventListener("click", addUserInputToScreen);
+        button.addEventListener("click", handleNumberClick);
 
         numberBoard.appendChild(button);
     }
@@ -180,7 +205,7 @@ const buildNums = () => {
         operatorButton.id = operator;
         operatorButton.textContent = operator;
 
-        operatorButton.addEventListener("click", addUserInputToScreen);
+        operatorButton.addEventListener("click", handleOperatorClick);
 
         numberBoard.appendChild(operatorButton);
     })
