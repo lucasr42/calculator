@@ -1,3 +1,6 @@
+const OPERATORS = ["+", "-", "*", "/"];
+const userInput = [];
+
 const validateNum = (num) => {
     console.log("num: ", num);
     // if (num || Number.isNaN(num)) {
@@ -28,11 +31,32 @@ const divide = (num1, num2) => {
  * Adds the number or operator clicked by the user to the screen
  * @param {Obj} input Event object for onclick to access the number or operator
  */
-const getUserInput = (input) => {
+const addUserInputToScreen = (input) => {
     const inputDiv = document.querySelector("#userInput");
     const inputVal = document.createElement("span");
     inputVal.textContent = input.target.textContent;
+    inputVal.id = "inputVal";
     inputDiv.appendChild(inputVal);
+}
+
+/**
+ * Gets the input from the screen and puts it into a global array as either an int or str
+ * to be userd later
+ * 
+ * This function needs to also trigger the actual math functions
+ */
+const getUserInputFromScreen = () => {
+    // grab all the numbers off the screen
+    const userChoices = document.querySelectorAll("#inputVal");
+    const choiceArr = [...userChoices];
+
+    // Transform the dom nodes into a single string to parse
+    const choiceStr = choiceArr.reduce((acc, cur) => {
+        return acc + cur.textContent;
+    }, "");
+    console.log("choiceStr after joining: ", choiceStr);
+
+    // Iterate through the string and check the numbers until you get a symbol
 }
 
 /**
@@ -53,7 +77,7 @@ const buildNums = () => {
             button.textContent = num;
 
             // Add the click event listener
-            button.addEventListener("click", getUserInput);
+            button.addEventListener("click", addUserInputToScreen);
 
             numberBoard.appendChild(button);
             num++;
@@ -68,10 +92,17 @@ const buildNums = () => {
         operatorButton.id = operator;
         operatorButton.textContent = operator;
 
-        operatorButton.addEventListener("click", getUserInput);
+        operatorButton.addEventListener("click", addUserInputToScreen);
 
         numberBoard.appendChild(operatorButton);
     })
+
+    // Add the equal button with it's own onclick
+    const equalButton = document.createElement("button");
+    equalButton.id = "equals";
+    equalButton.textContent = "=";
+    equalButton.addEventListener("click", getUserInputFromScreen);
+    numberBoard.appendChild(equalButton);
 }
 
 buildNums();
