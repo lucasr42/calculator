@@ -140,10 +140,14 @@ const handleEqualSign = () => {
     userInputDiv.appendChild(ansOutput);
 }
 
+/**
+ * Clears the board from input and answer
+ */
 const handleClearClick = () => {
     const userInputVals = document.querySelectorAll("#inputVal");
     const ansOutput = document.querySelector("#ansOutput");
-    const input = [...userInputVals, ansOutput];
+    const input = [...userInputVals];
+    ansOutput !== null ?? input.push(ansOutput);
     input.forEach((val) => {
         val.parentElement.removeChild(val);
     })
@@ -154,12 +158,12 @@ const handleClearClick = () => {
  * Need to add an eventListener and a function to take the numbers and do something with them
  */
 const buildNums = () => {
-    let num = 1;
+    let numOrder = 0;
     const operators = ["+", "-", "*", "/"];
     const numberBoard = document.querySelector("#numberBoard");
     
     // Build the number board
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i <= 9; i++) {
         const button = document.createElement("button");
         buttonclassName = "number";
         button.id = i;
@@ -172,6 +176,7 @@ const buildNums = () => {
     // Add the operators to the calculator board
     operators.forEach((operator) => {
         const operatorButton = document.createElement("button");
+        operatorButton.className = "operator";
         operatorButton.id = operator;
         operatorButton.textContent = operator;
 
@@ -182,6 +187,7 @@ const buildNums = () => {
 
     // Add the equal button with it's own onclick
     const equalButton = document.createElement("button");
+    equalButton.className = "equals";
     equalButton.id = "equals";
     equalButton.textContent = "=";
     equalButton.addEventListener("click", handleEqualSign);
@@ -189,6 +195,7 @@ const buildNums = () => {
 
     // Add the clear button
     const clearButton = document.createElement("button");
+    clearButton.className = "clear";
     clearButton.id = "clear";
     clearButton.textContent = "C";
     clearButton.addEventListener("click", handleClearClick);
