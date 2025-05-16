@@ -8,6 +8,7 @@ const validateNum = (num) => {
     // }
     return (num && Number.isNaN(num));
 }
+
 const add = (num1, num2) => {
     if (validateNum(num1) || validateNum(num2)) return "ERROR";
     console.log(num1, num2, num1+num2);
@@ -57,6 +58,41 @@ const getUserInputFromScreen = () => {
     console.log("choiceStr after joining: ", choiceStr);
 
     // Iterate through the string and check the numbers until you get a symbol
+    let num1 = "";
+    let operator = "";
+    let num2 = "";
+    for (const char of choiceStr) {
+        // if the char is not an operator, concatenate onto num
+        if (!OPERATORS.includes(char)) {
+            if (operator.length === 0) {
+                // Slap the char on the first number if the operator hasn't been defined yet
+                num1 += char;
+            } else {
+                num2 += char;
+            }
+        } else {
+            operator += char;
+        }
+    }
+    console.log(`${num1} ${operator} ${num2}`);
+    let answer = -1;
+    switch (operator) {
+        case OPERATORS[0]:
+            // +
+
+            break;
+        case OPERATORS[1]:
+            // -
+            break;
+        case OPERATORS[2]:
+            // *
+            break;
+        case OPERATORS[3]:
+            // /
+            break;
+        default:
+            console.log("Big errors bro! We didn't match an operator!!");
+    }
 }
 
 /**
