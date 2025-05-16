@@ -74,6 +74,15 @@ const getMathAnswer = (parsedChoices) => {
     }
 };
 
+
+/**
+ * Extracts the values from the buttons that were clicked and turns them into numbers and an
+ * operator
+ * Only handles two whole numbers and one operator
+ * TODO: Actually limit the handling to 2 nums and 1 operator
+ * @param {Array} choiceArr Holds all the values from the buttons the user clicked
+ * @returns {Array} Array with two numbers and the operator
+ */
 const parseInputNodesToString = (choiceArr) => {
     // Transform the dom nodes into a single string to parse
     const choiceStr = choiceArr.reduce((acc, cur) => {
@@ -132,33 +141,11 @@ const getUserInputFromScreen = () => {
 
     console.log("answer: ", answer);
 
-    // // Transform the dom nodes into a single string to parse
-    // const choiceStr = choiceArr.reduce((acc, cur) => {
-    //     return acc + cur.textContent;
-    // }, "");
-    // console.log("choiceStr after joining: ", choiceStr);
-
-    // // Iterate through the string and check the numbers until you get a symbol
-    // let num1 = "";
-    // let operator = "";
-    // let num2 = "";
-    // for (const char of choiceStr) {
-    //     // if the char is not an operator, concatenate onto num
-    //     if (!OPERATORS.includes(char)) {
-    //         if (operator.length === 0) {
-    //             // Slap the char on the first number if the operator hasn't been defined yet
-    //             num1 += char;
-    //         } else {
-    //             num2 += char;
-    //         }
-    //     } else {
-    //         operator += char;
-    //     }
-    // }
-    // console.log(`${num1} ${operator} ${num2}`);
-    
-    // let answer = getMathAnswer(num1, operator, num2);
-
+    const userInputDiv = document.querySelector("#userInput");
+    const ansOutput = document.createElement("div");
+    ansOutput.id = "ansOutput";
+    ansOutput.textContent = " = " + answer;
+    userInputDiv.appendChild(ansOutput);
 
 }
 
