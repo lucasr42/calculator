@@ -1,6 +1,16 @@
+// TODO: Put all user input in an object to do math with later rather than grabbing it off the screen
+//          and have more generic functions like handleClick() if possible
+//          So when you click equals, or operators, you check your object if the value is filled out yet
+//          Not sure how to add those values yet but I think I can do that
+
 const OPERATORS = ["+", "-", "*", "/"];
-const OPERATOR_CHOSEN = false;
+let OPERATOR_CHOSEN = false;
 const userInput = [];
+const inputDict = {
+    num1: "0",
+    operator: "+",
+    num2: "0"
+}
 
 const validateNum = (num) => {
     console.log("num: ", num);
@@ -70,6 +80,19 @@ const getMathAnswer = (parsedChoices) => {
     }
 };
 
+/**
+ * Clears the input from the screen
+ * - The OPERATOR_CHOSEN flag needs to be set individually from each use case
+ */
+const clearScreen = () => {
+    const userInputVals = document.querySelectorAll("#inputVal");
+    const ansOutput = document.querySelector("#ansOutput");
+    const input = [...userInputVals];
+    ansOutput && input.push(ansOutput);
+    input.forEach((val) => {
+        val.parentElement.removeChild(val);
+    })
+};
 
 /**
  * Extracts the values from the buttons that were clicked and turns them into numbers and an
@@ -91,7 +114,9 @@ const parseInputNodesToString = (choiceArr) => {
     let num2 = "";
     for (const char of choiceStr) {
         // if the char is not an operator, concatenate onto num
+        // user hasn't entered a single operator yet
         if (!OPERATORS.includes(char)) {
+            // operator length === 0 when you're still on the first number and haven't input an operator yet
             if (operator.length === 0) {
                 // Slap the char on the first number if the operator hasn't been defined yet
                 num1 += char;
@@ -99,12 +124,20 @@ const parseInputNodesToString = (choiceArr) => {
                 num2 += char;
             }
         } else {
+            // You already have one operator so when the user enters a second operator,
+            // you need to call the equals function
+            // And store the result somewhere that you can access it later
+            // And store the operator behind it
             operator += char;
         }
     }
     
     return [num1, operator, num2];
 };
+
+// const handleClick = (input) => {
+    // I want to get the value of any button click and throw it in something that I can retrieve from later
+// }
 
 /**
  * Number onClick handler
@@ -115,7 +148,7 @@ const handleNumberClick = (input) => {
 
     const inputDiv = document.querySelector("#userInput");
     const inputVal = document.createElement("span");
-    inputVal.textContent = input.target.textContent;
+    inputVal.textContent = input.target.textContent; // get the value of the number clicked
     inputVal.id = "inputVal";
     inputDiv.appendChild(inputVal);
 }
@@ -128,17 +161,45 @@ const handleNumberClick = (input) => {
  */
 const handleOperatorClick = (operator) => {
     // Only allow 1 operator to be chosen before doing the calculation
-    if (OPERATORS.includes(input.target.textContent) && !OPERATOR_CHOSEN) {
+    if (OPERATORS.includes(operator.target.textContent) && !OPERATOR_CHOSEN) {
+        console.log("1st operator chosen: ", operator.textContent, "OPERATOR_CHOSEN BEFORE UPDATE = ", OPERATOR_CHOSEN);
         OPERATOR_CHOSEN = true;
         const inputDiv = document.querySelector("#userInput");
         const inputOperator = document.createElement("span");
         inputOperator.textContent = operator.target.textContent;
         inputOperator.id = "inputVal";
-        inputDiv.appendCihld(inputOperator);
-    } else if (OPERATORS.includes(input.target.textContent) && OPERATOR_CHOSEN) {
-        // When the user hits a second operator, we need to do the operation
-        // Return the result here and put that result on the screen
-        // Along with the second operator, using the result as the left operand for the next calculation
+        inputDiv.appendChild(inputOperator);
+    } else if (OPERATORS.includes(operator.target.textContent) && OPERATOR_CHOSEN) {
+        // Get the second operator and do the math
+        const secondOperator = operator.target.textContent;
+        const inputOperatorSpan = document.createElement("span");
+        inputOperatorSpan.textContent = secondOperator;
+        inputOperatorSpan.id = "inputVal";
+
+        // This works to trigger the equals after a second operator click. 
+        // But you need refactor so you're not calling an operator but just a math function
+        handleEqualSign();
+
+        // Get the result of the last equation from the screen
+        const ansOutput = document.querySelector("#ansOutput");
+        const ans = ansOutput.textContent.split(" = ")[1];
+
+        // Clear the screen so you can do the math in the dumb way that you're currently doing it
+        clearScreen();
+
+        // Create a new element to hold the new operand
+        const newOperand = document.createElement("span");
+        newOperand.textContent = ans;
+        newOperand.id = "inputVal";
+
+        // Get the DOM list of user input to add the new operand element to
+        const userInput = document.querySelector("#userInput");
+        userInput.appendChild(newOperand)
+
+        // Add the new operator to the new operand
+        userInput.appendChild(inputOperatorSpan);
+        
+        OPERATOR_CHOSEN = false;
 
     }
 }
@@ -166,16 +227,16 @@ const handleEqualSign = () => {
 }
 
 /**
- * Clears the board from input and answer
+ * Does a full clear of the board and resets the operator flag
+ * 
+ * This is for the Clear button so should reset the board. The OPERATOR_CHOSEN flag will be set differently
+ * depending on the use case of the clearScreen() function so we're setting it here also
+ * 
+ * TODO: Implement a backspace
  */
 const handleClearClick = () => {
-    const userInputVals = document.querySelectorAll("#inputVal");
-    const ansOutput = document.querySelector("#ansOutput");
-    const input = [...userInputVals];
-    ansOutput !== null ?? input.push(ansOutput);
-    input.forEach((val) => {
-        val.parentElement.removeChild(val);
-    })
+    clearScreen();
+    OPERATOR_CHOSEN = false;
 }
 
 /**
