@@ -107,7 +107,7 @@ const parseInputNodesToString = (choiceArr) => {
     const choiceStr = choiceArr.reduce((acc, cur) => {
         return acc + cur.textContent;
     }, "");
-
+    console.log("choicestr: ", choiceStr);
     // Iterate through the string and check the numbers until you get a symbol
     let num1 = "";
     let operator = "";
@@ -123,15 +123,16 @@ const parseInputNodesToString = (choiceArr) => {
             } else {
                 num2 += char;
             }
-        } else {
+        } else if (OPERATORS.includes(char) && OPERATOR_CHOSEN) {
             // You already have one operator so when the user enters a second operator,
             // you need to call the equals function
             // And store the result somewhere that you can access it later
             // And store the operator behind it
             operator += char;
+            // OPERATOR_CHOSEN = true;
         }
     }
-    
+    console.log("num1: ", num1, "operator: ", operator, "num2: ", num2);
     return [num1, operator, num2];
 };
 
@@ -145,12 +146,25 @@ const parseInputNodesToString = (choiceArr) => {
  * @param {Obj} input Event object for onclick to access the number
  */
 const handleNumberClick = (input) => {
+    if (checkForErrorMessage()) {
+        const errorMessage = document.querySelector("#errorMessage");
+        errorMessage.parentElement.removeChild(errorMessage);
+    }
 
     const inputDiv = document.querySelector("#userInput");
     const inputVal = document.createElement("span");
     inputVal.textContent = input.target.textContent; // get the value of the number clicked
     inputVal.id = "inputVal";
     inputDiv.appendChild(inputVal);
+}
+
+/**
+ * Used to know when to clear the error message from the screen
+ * @returns True if there's an error message on the screen
+ */
+const checkForErrorMessage = () => {
+    const errorMessage = document.querySelector("#errorMessage");
+    return Boolean(errorMessage);
 }
 
 /**
@@ -164,12 +178,42 @@ const checkAnsOutput = () => {
 }
 
 /**
+ * 
+ * @returns True if an operator or "=" is found
+ */
+const isOnlyNumber = () => {
+    const inputElements = document.querySelectorAll("#inputVal");
+    const userInput = [...inputElements];
+    const isNotOnlyNumber = userInput.find((element) => {
+        return OPERATORS.includes(element.textCont) || element.textContent === "=";
+    })
+    return isNotOnlyNumber;
+}
+
+/**
+ * Searches userInput DOM elements for an operator
+ * @returns Falsy value if an operator is currently in the DOM
+ */
+const isOperatorFound = () => {
+    const inputElements = document.querySelectorAll("#inputVal");
+    const userInput = [...inputElements];
+    
+    const isOperatorFound = OPERATORS.includes(userInput[userInput.length-1].textContent);
+
+    return isOperatorFound;
+}
+
+/**
  * Operator onClick handler
  * Sends calculation as if an equal sign was clicked when the operator is the second operator chosen
  * Then outputs the result to the screen with the new operator and the result as the left operand
  * @param {Obj} operator Event object for operator click
  */
 const handleOperatorClick = (operator) => {
+    console.log("handling operator click");
+    if (isOperatorFound()) {
+        return;
+    }
     const inputDiv = document.querySelector("#userInput");
     // Create the new Operator element
     const operatorString = operator.target.textContent;
@@ -178,7 +222,7 @@ const handleOperatorClick = (operator) => {
     inputOperator.id = "inputVal";
     
     const isEqualOnScreen = checkAnsOutput();
-
+    
     if (OPERATORS.includes(operatorString) && !OPERATOR_CHOSEN) {
         OPERATOR_CHOSEN = true;
         inputDiv.appendChild(inputOperator);
@@ -221,6 +265,19 @@ const handleOperatorClick = (operator) => {
  * This function needs to also trigger the actual math functions
  */
 const handleEqualSign = () => {
+    if (isOperatorFound() || isOnlyNumber() || checkAnsOutput()) {
+        // Output an error message but don't break it
+        const errorMessage = document.createElement("div");
+        errorMessage.id = "errorMessage";
+        errorMessage.textContent = "Must enter a number or operator after the previous equation";
+        errorMessage.style.color = "Red";
+        errorMessage.style.fontWeight = "Bold";
+
+        const userInput = document.querySelector("#userInput");
+        userInput.appendChild(errorMessage);
+        // This works but need to style it
+        return;
+    }
     // grab all the numbers off the screen
     const userChoices = document.querySelectorAll("#inputVal");
     const choiceArr = [...userChoices];
