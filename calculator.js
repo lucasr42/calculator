@@ -5,6 +5,7 @@
 
 const OPERATORS = ["+", "-", "*", "/"];
 let OPERATOR_CHOSEN = false;
+let DIVIDE_BY_ZERO = false;
 const userInput = [];
 const inputDict = {
     num1: "0",
@@ -40,6 +41,10 @@ const multiply = (num1, num2) => {
 };
 
 const divide = (num1, num2) => {
+    if (num2 === "0") {
+        DIVIDE_BY_ZERO = true;
+        return "Can't Divide By 0, Dummy 🤪! Press Clear and Try Again.";
+    }
     num1 = Number.parseInt(num1);
     num2 = Number.parseInt(num2);
     return num1 / num2;
@@ -92,6 +97,8 @@ const clearScreen = () => {
     input.forEach((val) => {
         val.parentElement.removeChild(val);
     })
+    DIVIDE_BY_ZERO = false;
+    OPERATOR_CHOSEN = false;
 };
 
 /**
@@ -145,7 +152,8 @@ const parseInputNodesToString = (choiceArr) => {
  */
 const handleNumberClick = (input) => {
     // if (checkForErrorMessage()) {
-    //     removeErrorMessage();
+    //     // removeErrorMessage();
+    //     return;
     // }
     if (checkAnsOutput()) {
         // Clear the screen so we can start a new calculation when a number is chosen
@@ -238,7 +246,8 @@ const handleOperatorClick = (operator) => {
         }  
     }
     // if (checkForErrorMessage()) {
-    //     removeErrorMessage();
+    //     // removeErrorMessage();
+    //     return;
     // }
 
     const inputDiv = document.querySelector("#userInput");
@@ -262,6 +271,11 @@ const handleOperatorClick = (operator) => {
             // If there is an "=" on the screen, the user wants to use the result of the last calculation
             // but we don't have 2 operands
             handleEqualSign();
+
+            // Put this here to prevent the next operator from being used
+            if (DIVIDE_BY_ZERO === true) {
+                return;
+            }
         }
 
         // Get the result of the last equation from the screen
