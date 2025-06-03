@@ -107,7 +107,6 @@ const parseInputNodesToString = (choiceArr) => {
     const choiceStr = choiceArr.reduce((acc, cur) => {
         return acc + cur.textContent;
     }, "");
-    console.log("choicestr: ", choiceStr);
     // Iterate through the string and check the numbers until you get a symbol
     let num1 = "";
     let operator = "";
@@ -132,7 +131,6 @@ const parseInputNodesToString = (choiceArr) => {
             // OPERATOR_CHOSEN = true;
         }
     }
-    console.log("num1: ", num1, "operator: ", operator, "num2: ", num2);
     return [num1, operator, num2];
 };
 
@@ -147,8 +145,7 @@ const parseInputNodesToString = (choiceArr) => {
  */
 const handleNumberClick = (input) => {
     if (checkForErrorMessage()) {
-        const errorMessage = document.querySelector("#errorMessage");
-        errorMessage.parentElement.removeChild(errorMessage);
+        removeErrorMessage();
     }
 
     const inputDiv = document.querySelector("#userInput");
@@ -157,6 +154,14 @@ const handleNumberClick = (input) => {
     inputVal.id = "inputVal";
     inputDiv.appendChild(inputVal);
 }
+
+/**
+ * Removes the error message from the screen
+ */
+const removeErrorMessage = () => {
+    const errorMessage = document.querySelector("#errorMessage");
+    errorMessage.parentElement.removeChild(errorMessage);
+};
 
 /**
  * Used to know when to clear the error message from the screen
@@ -184,23 +189,27 @@ const checkAnsOutput = () => {
 const isOnlyNumber = () => {
     const inputElements = document.querySelectorAll("#inputVal");
     const userInput = [...inputElements];
-    const isNotOnlyNumber = userInput.find((element) => {
-        return OPERATORS.includes(element.textCont) || element.textContent === "=";
+    const operatorFound = userInput.find((element) => {
+        return OPERATORS.includes(element.textContent) || element.textContent === "=";
     })
-    return isNotOnlyNumber;
+    if (operatorFound) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 /**
- * Searches userInput DOM elements for an operator
- * @returns Falsy value if an operator is currently in the DOM
+ * Checks if last user input was an operator
+ * @returns True if the last input was an operator
  */
-const isOperatorFound = () => {
+const isLastInputOperator = () => {
     const inputElements = document.querySelectorAll("#inputVal");
     const userInput = [...inputElements];
     
-    const isOperatorFound = OPERATORS.includes(userInput[userInput.length-1].textContent);
+    const isLastInputOperator = OPERATORS.includes(userInput[userInput.length-1].textContent);
 
-    return isOperatorFound;
+    return isLastInputOperator;
 }
 
 /**
@@ -210,10 +219,22 @@ const isOperatorFound = () => {
  * @param {Obj} operator Event object for operator click
  */
 const handleOperatorClick = (operator) => {
-    console.log("handling operator click");
-    if (isOperatorFound()) {
-        return;
+    if (isLastInputOperator()) {
+        const inputElements = document.querySelectorAll("#inputVal");
+        const userInput = [...inputElements];
+        const prevOperator = userInput[userInput.length-1];
+
+        if (operator.target.textContent !== prevOperator.textContent) {
+            prevOperator.parentElement.removeChild(prevOperator);
+            OPERATOR_CHOSEN = false; // Flips the flag so it will drop into the first part and just append the new operator element
+        } else {
+            return; // Break it's the same operator without a 2nd number so we don't try to do the math
+        }  
     }
+    if (checkForErrorMessage()) {
+        removeErrorMessage();
+    }
+
     const inputDiv = document.querySelector("#userInput");
     // Create the new Operator element
     const operatorString = operator.target.textContent;
@@ -265,16 +286,19 @@ const handleOperatorClick = (operator) => {
  * This function needs to also trigger the actual math functions
  */
 const handleEqualSign = () => {
-    if (isOperatorFound() || isOnlyNumber() || checkAnsOutput()) {
+    if (isLastInputOperator() || isOnlyNumber() || checkAnsOutput()) {
+        // if (checkForErrorMessage()) {
+        //     return;
+        // }
         // Output an error message but don't break it
-        const errorMessage = document.createElement("div");
-        errorMessage.id = "errorMessage";
-        errorMessage.textContent = "Must enter a number or operator after the previous equation";
-        errorMessage.style.color = "Red";
-        errorMessage.style.fontWeight = "Bold";
+        // const errorMessage = document.createElement("div");
+        // errorMessage.id = "errorMessage";
+        // errorMessage.textContent = "Must enter a number or operator after the previous equation";
+        // errorMessage.style.color = "Red";
+        // errorMessage.style.fontWeight = "Bold";
 
-        const userInput = document.querySelector("#userInput");
-        userInput.appendChild(errorMessage);
+        // const userInput = document.querySelector("#userInput");
+        // userInput.appendChild(errorMessage);
         // This works but need to style it
         return;
     }
