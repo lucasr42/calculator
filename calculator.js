@@ -144,8 +144,14 @@ const parseInputNodesToString = (choiceArr) => {
  * @param {Obj} input Event object for onclick to access the number
  */
 const handleNumberClick = (input) => {
-    if (checkForErrorMessage()) {
-        removeErrorMessage();
+    // if (checkForErrorMessage()) {
+    //     removeErrorMessage();
+    // }
+    if (checkAnsOutput()) {
+        // Clear the screen so we can start a new calculation when a number is chosen
+        // after a previous calculation is complete
+        clearScreen();
+        OPERATOR_CHOSEN = false;
     }
 
     const inputDiv = document.querySelector("#userInput");
@@ -231,9 +237,9 @@ const handleOperatorClick = (operator) => {
             return; // Break it's the same operator without a 2nd number so we don't try to do the math
         }  
     }
-    if (checkForErrorMessage()) {
-        removeErrorMessage();
-    }
+    // if (checkForErrorMessage()) {
+    //     removeErrorMessage();
+    // }
 
     const inputDiv = document.querySelector("#userInput");
     // Create the new Operator element
