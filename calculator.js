@@ -154,31 +154,44 @@ const handleNumberClick = (input) => {
 }
 
 /**
+ * Checks the DOM to determine if the result from the last calculation is on the screen
+ * so we know how to proceed with the next operator click
+ * @returns True if the result of the last calculation is on the screen
+ */
+const checkAnsOutput = () => {
+    const ansOutput = document.querySelector("#ansOutput");
+    return Boolean(ansOutput);
+}
+
+/**
  * Operator onClick handler
  * Sends calculation as if an equal sign was clicked when the operator is the second operator chosen
  * Then outputs the result to the screen with the new operator and the result as the left operand
  * @param {Obj} operator Event object for operator click
  */
 const handleOperatorClick = (operator) => {
-    // Only allow 1 operator to be chosen before doing the calculation
-    if (OPERATORS.includes(operator.target.textContent) && !OPERATOR_CHOSEN) {
-        console.log("1st operator chosen: ", operator.textContent, "OPERATOR_CHOSEN BEFORE UPDATE = ", OPERATOR_CHOSEN);
-        OPERATOR_CHOSEN = true;
-        const inputDiv = document.querySelector("#userInput");
-        const inputOperator = document.createElement("span");
-        inputOperator.textContent = operator.target.textContent;
-        inputOperator.id = "inputVal";
-        inputDiv.appendChild(inputOperator);
-    } else if (OPERATORS.includes(operator.target.textContent) && OPERATOR_CHOSEN) {
-        // Get the second operator and do the math
-        const secondOperator = operator.target.textContent;
-        const inputOperatorSpan = document.createElement("span");
-        inputOperatorSpan.textContent = secondOperator;
-        inputOperatorSpan.id = "inputVal";
+    const inputDiv = document.querySelector("#userInput");
+    // Create the new Operator element
+    const operatorString = operator.target.textContent;
+    const inputOperator = document.createElement("span");
+    inputOperator.textContent = operatorString;
+    inputOperator.id = "inputVal";
+    
+    const isEqualOnScreen = checkAnsOutput();
 
+    if (OPERATORS.includes(operatorString) && !OPERATOR_CHOSEN) {
+        OPERATOR_CHOSEN = true;
+        inputDiv.appendChild(inputOperator);
+    } else if (OPERATORS.includes(operatorString) && OPERATOR_CHOSEN) {
         // This works to trigger the equals after a second operator click. 
         // But you need refactor so you're not calling an operator but just a math function
-        handleEqualSign();
+        if (!isEqualOnScreen) {
+            // If there is not an equal sign on the screen, then we have 2 operands and the user
+            // wants to do another calculation
+            // If there is an "=" on the screen, the user wants to use the result of the last calculation
+            // but we don't have 2 operands
+            handleEqualSign();
+        }
 
         // Get the result of the last equation from the screen
         const ansOutput = document.querySelector("#ansOutput");
@@ -192,17 +205,14 @@ const handleOperatorClick = (operator) => {
         newOperand.textContent = ans;
         newOperand.id = "inputVal";
 
-        // Get the DOM list of user input to add the new operand element to
-        const userInput = document.querySelector("#userInput");
-        userInput.appendChild(newOperand)
+        // Add the new operand element to DOM list
+        inputDiv.appendChild(newOperand)
 
         // Add the new operator to the new operand
-        userInput.appendChild(inputOperatorSpan);
-        
-        OPERATOR_CHOSEN = false;
-
+        inputDiv.appendChild(inputOperator);
     }
 }
+
 
 /**
  * Gets the input from the screen and puts it into a global array as either an int or str
