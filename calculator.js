@@ -80,14 +80,14 @@ const getMathAnswer = (parsedChoices) => {
             // /
             return divide(num1, num2);
         default:
-            console.log("Big errors bro! We didn't match an operator!!");
+            console.log("Big errors bro! We didn't match an operator!!", operator);
             return `ERROR determining math function to forward ${num1} and ${num2} to with operator ${operator}`;
     }
 };
 
 /**
  * Clears the input from the screen
- * - The OPERATOR_CHOSEN flag needs to be set individually from each use case
+ * - The OPERATOR_CHOSEN flag needs to be set individually from each use case. DON'T DO IT HERE!!!
  */
 const clearScreen = () => {
     const userInputVals = document.querySelectorAll("#inputVal");
@@ -98,7 +98,6 @@ const clearScreen = () => {
         val.parentElement.removeChild(val);
     })
     DIVIDE_BY_ZERO = false;
-    OPERATOR_CHOSEN = false;
 };
 
 /**
@@ -159,6 +158,7 @@ const handleNumberClick = (input) => {
         // Clear the screen so we can start a new calculation when a number is chosen
         // after a previous calculation is complete
         clearScreen();
+        // This is reseting the flag after a calculation is done when there was an equal on the screen
         OPERATOR_CHOSEN = false;
     }
 
@@ -258,7 +258,7 @@ const handleOperatorClick = (operator) => {
     inputOperator.id = "inputVal";
     
     const isEqualOnScreen = checkAnsOutput();
-    
+
     if (OPERATORS.includes(operatorString) && !OPERATOR_CHOSEN) {
         OPERATOR_CHOSEN = true;
         inputDiv.appendChild(inputOperator);
