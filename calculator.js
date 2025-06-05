@@ -109,35 +109,22 @@ const clearScreen = () => {
  * @returns {Array} Array with two numbers and the operator
  */
 const parseInputNodesToString = (choiceArr) => {
-    // Transform the dom nodes into a single string to parse
-    const choiceStr = choiceArr.reduce((acc, cur) => {
-        return acc + cur.textContent;
-    }, "");
-    // Iterate through the string and check the numbers until you get a symbol
-    let num1 = "";
-    let operator = "";
-    let num2 = "";
-    for (const char of choiceStr) {
-        // if the char is not an operator, concatenate onto num
-        // user hasn't entered a single operator yet
-        if (!OPERATORS.includes(char)) {
-            // operator length === 0 when you're still on the first number and haven't input an operator yet
-            if (operator.length === 0) {
-                // Slap the char on the first number if the operator hasn't been defined yet
-                num1 += char;
-            } else {
-                num2 += char;
-            }
-        } else if (OPERATORS.includes(char) && OPERATOR_CHOSEN) {
-            // You already have one operator so when the user enters a second operator,
-            // you need to call the equals function
-            // And store the result somewhere that you can access it later
-            // And store the operator behind it
-            operator += char;
-            // OPERATOR_CHOSEN = true;
+    let num1New = "";
+    let operatorNew = "";
+    let num2New = "";
+    choiceArr.forEach((element) => { // This should work 
+        const input = element.textContent;
+        console.log("input: ", input);
+        if (num1New.length === 0) {
+            num1New = num1New + input;
+        } else if (operatorNew.length === 0 && OPERATORS.includes(input)) {
+            operatorNew = operatorNew + input;
+        } else {
+            num2New = num2New + input;
         }
-    }
-    return [num1, operator, num2];
+    })
+
+    return [num1New, operatorNew, num2New];
 };
 
 // const handleClick = (input) => {
@@ -150,10 +137,6 @@ const parseInputNodesToString = (choiceArr) => {
  * @param {Obj} input Event object for onclick to access the number
  */
 const handleNumberClick = (input) => {
-    // if (checkForErrorMessage()) {
-    //     // removeErrorMessage();
-    //     return;
-    // }
     if (checkAnsOutput()) {
         // Clear the screen so we can start a new calculation when a number is chosen
         // after a previous calculation is complete
@@ -167,23 +150,6 @@ const handleNumberClick = (input) => {
     inputVal.textContent = input.target.textContent; // get the value of the number clicked
     inputVal.id = "inputVal";
     inputDiv.appendChild(inputVal);
-}
-
-/**
- * Removes the error message from the screen
- */
-const removeErrorMessage = () => {
-    const errorMessage = document.querySelector("#errorMessage");
-    errorMessage.parentElement.removeChild(errorMessage);
-};
-
-/**
- * Used to know when to clear the error message from the screen
- * @returns True if there's an error message on the screen
- */
-const checkForErrorMessage = () => {
-    const errorMessage = document.querySelector("#errorMessage");
-    return Boolean(errorMessage);
 }
 
 /**
@@ -242,13 +208,9 @@ const handleOperatorClick = (operator) => {
             prevOperator.parentElement.removeChild(prevOperator);
             OPERATOR_CHOSEN = false; // Flips the flag so it will drop into the first part and just append the new operator element
         } else {
-            return; // Break it's the same operator without a 2nd number so we don't try to do the math
+            return; // Break, it's the same operator without a 2nd number so we don't try to do the math
         }  
     }
-    // if (checkForErrorMessage()) {
-    //     // removeErrorMessage();
-    //     return;
-    // }
 
     const inputDiv = document.querySelector("#userInput");
     // Create the new Operator element
@@ -281,7 +243,7 @@ const handleOperatorClick = (operator) => {
         // Get the result of the last equation from the screen
         const ansOutput = document.querySelector("#ansOutput");
         const ans = ansOutput.textContent.split(" = ")[1];
-
+        console.log("ans after clicking another operator: ", ans);
         // Clear the screen so you can do the math in the dumb way that you're currently doing it
         clearScreen();
 
@@ -307,19 +269,6 @@ const handleOperatorClick = (operator) => {
  */
 const handleEqualSign = () => {
     if (isLastInputOperator() || isOnlyNumber() || checkAnsOutput()) {
-        // if (checkForErrorMessage()) {
-        //     return;
-        // }
-        // Output an error message but don't break it
-        // const errorMessage = document.createElement("div");
-        // errorMessage.id = "errorMessage";
-        // errorMessage.textContent = "Must enter a number or operator after the previous equation";
-        // errorMessage.style.color = "Red";
-        // errorMessage.style.fontWeight = "Bold";
-
-        // const userInput = document.querySelector("#userInput");
-        // userInput.appendChild(errorMessage);
-        // This works but need to style it
         return;
     }
     // grab all the numbers off the screen
@@ -335,6 +284,7 @@ const handleEqualSign = () => {
     ansOutput.id = "ansOutput";
     ansOutput.textContent = " = " + answer;
     userInputDiv.appendChild(ansOutput);
+    console.log("ansOutput: ", ansOutput.textContent);
 }
 
 /**
