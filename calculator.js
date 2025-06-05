@@ -23,30 +23,35 @@ const validateNum = (num) => {
 
 const add = (num1, num2) => {
     // if (validateNum(num1) || validateNum(num2)) return "ERROR";
-    num1 = Number.parseInt(num1);
-    num2 = Number.parseInt(num2);
+    // num1 = Number.parseInt(num1);
+    // num2 = Number.parseInt(num2);
+    console.log("num1: ", num1, "num2", num2);
     return num1 + num2;
 };
 
 const subtract = (num1, num2) => {
-    num1 = Number.parseInt(num1);
-    num2 = Number.parseInt(num2);
+    // num1 = Number.parseInt(num1);
+    // num2 = Number.parseInt(num2);
+    console.log("num1: ", num1, "num2", num2);
     return num1 - num2;
 };
 
 const multiply = (num1, num2) => {
-    num1 = Number.parseInt(num1);
-    num2 = Number.parseInt(num2);
+    // num1 = Number.parseInt(num1);
+    // num2 = Number.parseInt(num2);
+    console.log("num1: ", num1, "num2", num2);
     return num1 * num2;
 };
 
 const divide = (num1, num2) => {
     if (num2 === "0") {
         DIVIDE_BY_ZERO = true;
-        return "Can't Divide By 0, Dummy 🤪! Press Clear and Try Again.";
+        return "Can't Divide By 0, Dummy 🤪! Press Clear or Pick a number to start over.";
     }
-    num1 = Number.parseInt(num1);
-    num2 = Number.parseInt(num2);
+    // num1 = Number.parseInt(num1);
+    // num2 = Number.parseInt(num2);
+    console.log("num1: ", num1, "num2", num2);
+    console.log("divide operation: ", num1/num2);
     return num1 / num2;
 };
 
@@ -65,20 +70,31 @@ const getMathAnswer = (parsedChoices) => {
     const num1 = parsedChoices[0];
     const operator = parsedChoices[1];
     const num2 = parsedChoices[2];
-
+    let ans = 0;
     switch (operator) {
         case OPERATORS[0]:
             // +
-            return add(num1, num2);
+            ans = add(num1, num2);
+            console.log("add: ", ans);
+            return Number(ans.toFixed(2));
         case OPERATORS[1]:
             // -
-            return subtract(num1, num2);
+            ans = subtract(num1, num2);
+            console.log("subtract: ", ans);
+            return Number(ans.toFixed(2));
         case OPERATORS[2]:
             // *
-            return multiply(num1, num2);
+            ans = multiply(num1, num2);
+            console.log("multiply: ", ans);
+            return Number(ans.toFixed(2));
         case OPERATORS[3]:
             // /
-            return divide(num1, num2);
+            ans = divide(num1, num2);
+            console.log("divide: ", ans);
+            if (typeof ans === String) {
+                return ans;
+            }
+            return Number(ans.toFixed(2));
         default:
             console.log("Big errors bro! We didn't match an operator!!", operator);
             return `ERROR determining math function to forward ${num1} and ${num2} to with operator ${operator}`;
@@ -104,7 +120,6 @@ const clearScreen = () => {
  * Extracts the values from the buttons that were clicked and turns them into numbers and an
  * operator
  * Only handles two whole numbers and one operator
- * TODO: Actually limit the handling to 2 nums and 1 operator
  * @param {Array} choiceArr Holds all the values from the buttons the user clicked
  * @returns {Array} Array with two numbers and the operator
  */
@@ -112,15 +127,20 @@ const parseInputNodesToString = (choiceArr) => {
     let num1New = "";
     let operatorNew = "";
     let num2New = "";
-    choiceArr.forEach((element) => { // This should work 
+    console.log("choiceArr: ", choiceArr);
+    choiceArr.forEach((element) => {
         const input = element.textContent;
         console.log("input: ", input);
-        if (num1New.length === 0) {
+        // if (num1New.length === 0) {
+        if (operatorNew.length === 0 && !OPERATORS.includes(input)) {
             num1New = num1New + input;
+            console.log("num1New after update: ", num1New);
         } else if (operatorNew.length === 0 && OPERATORS.includes(input)) {
             operatorNew = operatorNew + input;
+            console.log("operatorNew after update: ", operatorNew);
         } else {
             num2New = num2New + input;
+            console.log("num2New after update: ", num2New);
         }
     })
 
@@ -234,16 +254,17 @@ const handleOperatorClick = (operator) => {
             // but we don't have 2 operands
             handleEqualSign();
 
-            // Put this here to prevent the next operator from being used
-            if (DIVIDE_BY_ZERO === true) {
-                return;
-            }
+        }
+
+        // Put this here to prevent the next operator from being used
+        if (DIVIDE_BY_ZERO === true) {
+            return;
         }
 
         // Get the result of the last equation from the screen
         const ansOutput = document.querySelector("#ansOutput");
         const ans = ansOutput.textContent.split(" = ")[1];
-        console.log("ans after clicking another operator: ", ans);
+
         // Clear the screen so you can do the math in the dumb way that you're currently doing it
         clearScreen();
 
@@ -284,7 +305,6 @@ const handleEqualSign = () => {
     ansOutput.id = "ansOutput";
     ansOutput.textContent = " = " + answer;
     userInputDiv.appendChild(ansOutput);
-    console.log("ansOutput: ", ansOutput.textContent);
 }
 
 /**
