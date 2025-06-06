@@ -24,8 +24,8 @@ const validateNum = (num) => {
 
 const add = (num1, num2) => {
     // if (validateNum(num1) || validateNum(num2)) return "ERROR";
-    // num1 = Number.parseInt(num1);
-    // num2 = Number.parseInt(num2);
+    num1 = Number(num1);
+    num2 = Number(num2);
     console.log("num1: ", num1, "num2", num2);
     return num1 + num2;
 };
@@ -33,6 +33,8 @@ const add = (num1, num2) => {
 const subtract = (num1, num2) => {
     // num1 = Number.parseInt(num1);
     // num2 = Number.parseInt(num2);
+    num1 = Number(num1);
+    num2 = Number(num2);
     console.log("num1: ", num1, "num2", num2);
     return num1 - num2;
 };
@@ -40,6 +42,8 @@ const subtract = (num1, num2) => {
 const multiply = (num1, num2) => {
     // num1 = Number.parseInt(num1);
     // num2 = Number.parseInt(num2);
+    num1 = Number(num1);
+    num2 = Number(num2);
     console.log("num1: ", num1, "num2", num2);
     return num1 * num2;
 };
@@ -53,6 +57,8 @@ const divide = (num1, num2) => {
     }
     // num1 = Number.parseInt(num1);
     // num2 = Number.parseInt(num2);
+    num1 = Number(num1);
+    num2 = Number(num2);
     console.log("num1: ", num1, "num2", num2);
     console.log("divide operation: ", num1/num2);
     return num1 / num2;
@@ -82,22 +88,26 @@ const getMathAnswer = (parsedChoices) => {
             // +
             ans = add(num1, num2);
             console.log("add: ", ans);
-            return Number(ans.toFixed(2));
+            return Math.round(ans * 100) / 100;
+            // return Number(ans.toFixed(2));
         case OPERATORS[1]:
             // -
             ans = subtract(num1, num2);
             console.log("subtract: ", ans);
-            return Number(ans.toFixed(2));
+            // return Number(ans.toFixed(2));
+            return Math.round(ans * 100) / 100;
         case OPERATORS[2]:
             // *
             ans = multiply(num1, num2);
             console.log("multiply: ", ans);
-            return Number(ans.toFixed(2));
+            // return Number(ans.toFixed(2));
+            return Math.round(ans * 100) / 100;
         case OPERATORS[3]:
             // /
             ans = divide(num1, num2);
             console.log("divide: ", ans);
-            return Number(ans.toFixed(2));
+            // return Number(ans.toFixed(2));
+            return Math.round(ans * 100) / 100;
         default:
             console.log("Big errors bro! We didn't match an operator!!", operator);
             return `ERROR determining math function to forward ${num1} and ${num2} to with operator ${operator}`;
