@@ -105,7 +105,17 @@ const getMathAnswer = (parsedChoices) => {
 };
 
 const backspace = () => {
-    // TODO: implement backspace
+    const userInputVals = document.querySelectorAll("#inputVal");
+    const ansOutput = document.querySelector("#ansOutput");
+    const input = [...userInputVals];
+    ansOutput && input.push(ansOutput);
+    const last = input[input.length-1];
+    if (OPERATORS.includes(last.textContent)) {
+        OPERATOR_CHOSEN = false;
+    } else if (last.textContent === ".") {
+        enableDecimal();
+    }
+    last.parentElement.removeChild(last);
 }
 
 /**
@@ -353,9 +363,13 @@ const handleEqualSign = () => {
  * 
  * TODO: Implement a backspace
  */
-const handleClearClick = () => {
+const handleAllClearClick = () => {
     clearScreen();
     OPERATOR_CHOSEN = false;
+}
+
+const handleClearClick = () => {
+    backspace();
 }
 
 /**
@@ -410,7 +424,7 @@ const buildNums = () => {
     allClearButton.className = "allClear";
     allClearButton.id = "allClear";
     allClearButton.textContent = "AC";
-    allClearButton.addEventListener("click", handleClearClick);
+    allClearButton.addEventListener("click", handleAllClearClick);
     numberBoard.appendChild(allClearButton);
 
     const clearButton = document.createElement("button");
