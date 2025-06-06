@@ -6,6 +6,7 @@
 const OPERATORS = ["+", "-", "*", "/"];
 let OPERATOR_CHOSEN = false;
 let DIVIDE_BY_ZERO = false;
+let DECIMAL_CLICKED = false;
 const userInput = [];
 const inputDict = {
     num1: "0",
@@ -103,6 +104,10 @@ const getMathAnswer = (parsedChoices) => {
     }
 };
 
+const backspace = () => {
+    // TODO: implement backspace
+}
+
 /**
  * Clears the input from the screen
  * - The OPERATOR_CHOSEN flag needs to be set individually from each use case. DON'T DO IT HERE!!!
@@ -116,6 +121,7 @@ const clearScreen = () => {
         val.parentElement.removeChild(val);
     })
     DIVIDE_BY_ZERO = false;
+    enableDecimal();
 };
 
 /**
@@ -126,6 +132,7 @@ const clearScreen = () => {
  * @returns {Array} Array with two numbers and the operator
  */
 const parseInputNodesToString = (choiceArr) => {
+    // TODO: Handle the decimal
     let num1New = "";
     let operatorNew = "";
     let num2New = "";
@@ -133,7 +140,6 @@ const parseInputNodesToString = (choiceArr) => {
     choiceArr.forEach((element) => {
         const input = element.textContent;
         console.log("input: ", input);
-        // if (num1New.length === 0) {
         if (operatorNew.length === 0 && !OPERATORS.includes(input)) {
             num1New = num1New + input;
             console.log("num1New after update: ", num1New);
@@ -214,6 +220,29 @@ const isLastInputOperator = () => {
     return isLastInputOperator;
 }
 
+const disableDecimal = () => {
+    DECIMAL_CLICKED = true;
+    const decimal = document.querySelector("#decimal");
+    decimal.disabled = true;
+};
+
+const enableDecimal = () => {
+    DECIMAL_CLICKED = false;
+    const decimal = document.querySelector("#decimal");
+    decimal.disabled = false;
+}
+
+const handleDecimalClick = (decimal) => {
+    const inputDiv = document.querySelector("#userInput");
+    // Create the new Operator element
+    const decimalString = decimal.target.textContent;
+    const inputDecimal = document.createElement("span");
+    inputDecimal.textContent = decimalString;
+    inputDecimal.id = "inputVal";
+    inputDiv.appendChild(inputDecimal);
+    disableDecimal();
+}
+
 /**
  * Operator onClick handler
  * Sends calculation as if an equal sign was clicked when the operator is the second operator chosen
@@ -221,6 +250,7 @@ const isLastInputOperator = () => {
  * @param {Obj} operator Event object for operator click
  */
 const handleOperatorClick = (operator) => {
+    // TODO: Disabled the decimal after it's been clicked once
     if (isLastInputOperator()) {
         const inputElements = document.querySelectorAll("#inputVal");
         const userInput = [...inputElements];
@@ -240,7 +270,11 @@ const handleOperatorClick = (operator) => {
     const inputOperator = document.createElement("span");
     inputOperator.textContent = operatorString;
     inputOperator.id = "inputVal";
-    
+
+    // if (operatorString === "." && DECIMAL_CLICKED === false) {
+    //     disableDecimal();
+    // } 
+    // console.log("operator: ", operatorString);
     const isEqualOnScreen = checkAnsOutput();
 
     if (OPERATORS.includes(operatorString) && !OPERATOR_CHOSEN) {
@@ -307,6 +341,8 @@ const handleEqualSign = () => {
     ansOutput.id = "ansOutput";
     ansOutput.textContent = " = " + answer;
     userInputDiv.appendChild(ansOutput);
+
+    enableDecimal();
 }
 
 /**
@@ -328,7 +364,7 @@ const handleClearClick = () => {
  */
 const buildNums = () => {
     let numOrder = 0;
-    const operators = ["+", "-", "*", "/", "."];
+    const operators = ["+", "-", "*", "/"];
     const numberBoard = document.querySelector("#numberBoard");
     
     // Build the number board
@@ -353,6 +389,13 @@ const buildNums = () => {
 
         numberBoard.appendChild(operatorButton);
     })
+
+    const decimal = document.createElement("button");
+    decimal.className = "decimal";
+    decimal.id = "decimal";
+    decimal.textContent = ".";
+    decimal.addEventListener("click", handleDecimalClick);
+    numberBoard.appendChild(decimal);
 
     // Add the equal button with it's own onclick
     const equalButton = document.createElement("button");
