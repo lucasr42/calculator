@@ -45,6 +45,8 @@ const multiply = (num1, num2) => {
 
 const divide = (num1, num2) => {
     if (num2 === "0") {
+        // You shouldn't be returning a string and a number here dummy!
+        // Might want to put the error on the screen and return empty
         DIVIDE_BY_ZERO = true;
         return "Can't Divide By 0, Dummy 🤪! Press Clear or Pick a number to start over.";
     }
@@ -57,12 +59,15 @@ const divide = (num1, num2) => {
 
 /**
  * Forwards the math operation to the correct math function based on the operator
+ * TODO: You shouldn't be returning strings and numbers from this function. You need to figure out a different way to 
+ *      handle the errors here than you're currently doing
  * @param {int} num1 
  * @param {String} operator 
  * @param {int} num2 
  */
 const getMathAnswer = (parsedChoices) => {
     if (parsedChoices.length !== 3) {
+        // Might want to put the error on the screen and return empty
         return `ERROR: Cannot handle more than 2 numbers and one operator. Received: ${parsedChoices}`;
     }
 
@@ -91,9 +96,6 @@ const getMathAnswer = (parsedChoices) => {
             // /
             ans = divide(num1, num2);
             console.log("divide: ", ans);
-            if (typeof ans === String) {
-                return ans;
-            }
             return Number(ans.toFixed(2));
         default:
             console.log("Big errors bro! We didn't match an operator!!", operator);
@@ -326,7 +328,7 @@ const handleClearClick = () => {
  */
 const buildNums = () => {
     let numOrder = 0;
-    const operators = ["+", "-", "*", "/"];
+    const operators = ["+", "-", "*", "/", "."];
     const numberBoard = document.querySelector("#numberBoard");
     
     // Build the number board
@@ -361,6 +363,13 @@ const buildNums = () => {
     numberBoard.appendChild(equalButton);
 
     // Add the clear button
+    const allClearButton = document.createElement("button");
+    allClearButton.className = "allClear";
+    allClearButton.id = "allClear";
+    allClearButton.textContent = "AC";
+    allClearButton.addEventListener("click", handleClearClick);
+    numberBoard.appendChild(allClearButton);
+
     const clearButton = document.createElement("button");
     clearButton.className = "clear";
     clearButton.id = "clear";

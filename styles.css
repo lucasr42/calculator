@@ -25,65 +25,75 @@ button {
 }
 
 #\30 {
-    order: 13;
+    order: 16;
 }
 
 #\31 {
-    order: 0;
+    order: 3;
 }
 
 #\32 {
-    order: 1;
-}
-
-#\33 {
-    order: 2;
-}
-
-#\34 {
     order: 4;
 }
 
-#\35 {
+#\33 {
     order: 5;
 }
 
-#\36 {
-    order: 6;
-}
-
-#\37 {
-    order: 8;
-}
-
-#\38 {
-    order: 9;
-}
-
-#\39 {
-    order: 10;
-}
-
-#\+ {
+#\34 {
     order: 7;
 }
 
-#\- {
-    order:11
+#\35 {
+    order: 8;
 }
 
-#\* {
-    order: 14;
+#\36 {
+    order: 9;
 }
 
-#\/ {
+#\37 {
+    order: 11;
+}
+
+#\38 {
     order: 12;
 }
 
-#equals {
+#\39 {
+    order: 13;
+}
+
+#\+ {
+    order: 14;
+}
+
+#\- {
+    order: 10;
+}
+
+#\* {
+    order: 6;
+}
+
+#\/ {
+    order: 2;
+}
+#\. {
     order: 15;
 }
 
+#equals {
+    order: 17;
+    width: 48%;
+}
+
+#allClear {
+    order: 0;
+    width: 35%;
+}
+
 #clear {
-    order: 3;
+    order: 1;
+    width: 35%;
 }
