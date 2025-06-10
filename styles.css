@@ -4,7 +4,6 @@ body {
     align-items: center;
 }
 
-
 .numbers {
     display: flex;
     flex-wrap: wrap;
@@ -96,4 +95,9 @@ button {
 #clear {
     order: 1;
     width: 35%;
+}
+
+.ansOutput, .numOutput, .operatorOutput {
+    font-weight: bold;
+    font-size: 35px;
 }

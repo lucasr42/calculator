@@ -86,10 +86,11 @@ const getMathAnswer = (parsedChoices) => {
  */
 const displayAnswer = (answer) => {
     const userInput = document.querySelector("#userInput");
-    const anslement = document. createElement("span");
-    anslement.id = "ansOutput";
-    anslement.textContent = " = " + answer;
-    userInput.appendChild(anslement);
+    const ansElement = document.createElement("span");
+    ansElement.className = "ansOutput";
+    ansElement.id = "ansOutput";
+    ansElement.textContent = " = " + answer;
+    userInput.appendChild(ansElement);
 }
 
 
@@ -173,6 +174,7 @@ const handleNumberClick = (input) => {
     const inputVal = document.createElement("span");
     inputVal.textContent = input.target.textContent; // get the value of the number clicked
     inputVal.id = "inputVal";
+    inputVal.className = "numOutput";
     inputDiv.appendChild(inputVal);
 }
 
@@ -252,6 +254,7 @@ const handleDecimalClick = (decimal) => {
     const inputDecimal = document.createElement("span");
     inputDecimal.textContent = decimalString;
     inputDecimal.id = "inputVal";
+    inputDecimal.className = "operatorOutput";
     inputDiv.appendChild(inputDecimal);
     disableDecimal();
 }
@@ -283,6 +286,7 @@ const handleOperatorClick = (operator) => {
     const inputOperator = document.createElement("span");
     inputOperator.textContent = operatorString;
     inputOperator.id = "inputVal";
+    inputOperator.className = "operatorOutput";
 
     const isEqualOnScreen = checkAnsOutput();
 
@@ -317,6 +321,7 @@ const handleOperatorClick = (operator) => {
         const newOperand = document.createElement("span");
         newOperand.textContent = ans;
         newOperand.id = "inputVal";
+        newOperand.className = "numOutput";
 
         // Add the new operand element to DOM list
         inputDiv.appendChild(newOperand)
