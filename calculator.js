@@ -1,84 +1,56 @@
-// TODO: Put all user input in an object to do math with later rather than grabbing it off the screen
-//          and have more generic functions like handleClick() if possible
-//          So when you click equals, or operators, you check your object if the value is filled out yet
-//          Not sure how to add those values yet but I think I can do that
 
 const OPERATORS = ["+", "-", "*", "/"];
 let OPERATOR_CHOSEN = false;
 let DIVIDE_BY_ZERO = false;
 let DECIMAL_CLICKED = false;
-const userInput = [];
-const inputDict = {
-    num1: "0",
-    operator: "+",
-    num2: "0"
-}
 
-const validateNum = (num) => {
-    console.log("num: ", num);
-    // if (num || Number.isNaN(num)) {
-    //     return "ERROR";
-    // }
-    return (num && Number.isNaN(num));
-}
 
 const add = (num1, num2) => {
-    // if (validateNum(num1) || validateNum(num2)) return "ERROR";
     num1 = Number(num1);
     num2 = Number(num2);
-    console.log("num1: ", num1, "num2", num2);
+
     return num1 + num2;
 };
 
 const subtract = (num1, num2) => {
-    // num1 = Number.parseInt(num1);
-    // num2 = Number.parseInt(num2);
     num1 = Number(num1);
     num2 = Number(num2);
-    console.log("num1: ", num1, "num2", num2);
+
     return num1 - num2;
 };
 
 const multiply = (num1, num2) => {
-    // num1 = Number.parseInt(num1);
-    // num2 = Number.parseInt(num2);
     num1 = Number(num1);
     num2 = Number(num2);
-    console.log("num1: ", num1, "num2", num2);
+
     return num1 * num2;
 };
 
 const divide = (num1, num2) => {
     if (num2 === "0") {
-        // You shouldn't be returning a string and a number here dummy!
-        // Might want to put the error on the screen and return empty
         DIVIDE_BY_ZERO = true;
-        return "Can't Divide By 0, Dummy 🤪! Press Clear or Pick a number to start over.";
+        displayAnswer("Can't Divide By 0, Dummy 🤪! Press Clear or Pick a number to start over.");
+        return;
     }
-    // num1 = Number.parseInt(num1);
-    // num2 = Number.parseInt(num2);
+
     num1 = Number(num1);
     num2 = Number(num2);
-    console.log("num1: ", num1, "num2", num2);
-    console.log("divide operation: ", num1/num2);
+
     return num1 / num2;
 };
 
 /**
  * Forwards the math operation to the correct math function based on the operator
- * TODO: You shouldn't be returning strings and numbers from this function. You need to figure out a different way to 
- *      handle the errors here than you're currently doing
  * @param {int} num1 
  * @param {String} operator 
  * @param {int} num2 
  */
 const getMathAnswer = (parsedChoices) => {
     if (parsedChoices.length !== 3) {
-        // Might want to put the error on the screen and return empty
-        return `ERROR: Cannot handle more than 2 numbers and one operator. Received: ${parsedChoices}`;
+        displayAnswer(`ERROR: Cannot handle more than 2 numbers and one operator. Received: ${parsedChoices}`);
+        return;
     }
 
-    // Add a try except around getting the nums and operator out
     const num1 = parsedChoices[0];
     const operator = parsedChoices[1];
     const num2 = parsedChoices[2];
@@ -87,26 +59,19 @@ const getMathAnswer = (parsedChoices) => {
         case OPERATORS[0]:
             // +
             ans = add(num1, num2);
-            console.log("add: ", ans);
             return Math.round(ans * 100) / 100;
-            // return Number(ans.toFixed(2));
         case OPERATORS[1]:
             // -
             ans = subtract(num1, num2);
-            console.log("subtract: ", ans);
-            // return Number(ans.toFixed(2));
             return Math.round(ans * 100) / 100;
         case OPERATORS[2]:
             // *
             ans = multiply(num1, num2);
-            console.log("multiply: ", ans);
-            // return Number(ans.toFixed(2));
             return Math.round(ans * 100) / 100;
         case OPERATORS[3]:
             // /
             ans = divide(num1, num2);
-            console.log("divide: ", ans);
-            // return Number(ans.toFixed(2));
+            if (ans === undefined) return;
             return Math.round(ans * 100) / 100;
         default:
             console.log("Big errors bro! We didn't match an operator!!", operator);
@@ -114,6 +79,24 @@ const getMathAnswer = (parsedChoices) => {
     }
 };
 
+
+/**
+ * Outputs the result of a calculation to the screen, appending it within the main userInput div
+ * @param {String} answer either a number of an error message
+ */
+const displayAnswer = (answer) => {
+    const userInput = document.querySelector("#userInput");
+    const anslement = document. createElement("span");
+    anslement.id = "ansOutput";
+    anslement.textContent = " = " + answer;
+    userInput.appendChild(anslement);
+}
+
+
+/**
+ * Allows user to delete the last thing put on the screen
+ * Removes a whole answer, including the equal sign, and all number/input operators
+ */
 const backspace = () => {
     const userInputVals = document.querySelectorAll("#inputVal");
     const ansOutput = document.querySelector("#ansOutput");
@@ -127,6 +110,7 @@ const backspace = () => {
     }
     last.parentElement.removeChild(last);
 }
+
 
 /**
  * Clears the input from the screen
@@ -144,40 +128,32 @@ const clearScreen = () => {
     enableDecimal();
 };
 
+
 /**
  * Extracts the values from the buttons that were clicked and turns them into numbers and an
  * operator
- * Only handles two whole numbers and one operator
  * @param {Array} choiceArr Holds all the values from the buttons the user clicked
  * @returns {Array} Array with two numbers and the operator
  */
 const parseInputNodesToString = (choiceArr) => {
-    // TODO: Handle the decimal
     let num1New = "";
     let operatorNew = "";
     let num2New = "";
-    console.log("choiceArr: ", choiceArr);
+
     choiceArr.forEach((element) => {
         const input = element.textContent;
-        console.log("input: ", input);
         if (operatorNew.length === 0 && !OPERATORS.includes(input)) {
             num1New = num1New + input;
-            console.log("num1New after update: ", num1New);
         } else if (operatorNew.length === 0 && OPERATORS.includes(input)) {
             operatorNew = operatorNew + input;
-            console.log("operatorNew after update: ", operatorNew);
         } else {
             num2New = num2New + input;
-            console.log("num2New after update: ", num2New);
         }
     })
 
     return [num1New, operatorNew, num2New];
 };
 
-// const handleClick = (input) => {
-    // I want to get the value of any button click and throw it in something that I can retrieve from later
-// }
 
 /**
  * Number onClick handler
@@ -200,6 +176,7 @@ const handleNumberClick = (input) => {
     inputDiv.appendChild(inputVal);
 }
 
+
 /**
  * Checks the DOM to determine if the result from the last calculation is on the screen
  * so we know how to proceed with the next operator click
@@ -209,6 +186,7 @@ const checkAnsOutput = () => {
     const ansOutput = document.querySelector("#ansOutput");
     return Boolean(ansOutput);
 }
+
 
 /**
  * 
@@ -227,6 +205,7 @@ const isOnlyNumber = () => {
     }
 }
 
+
 /**
  * Checks if last user input was an operator
  * @returns True if the last input was an operator
@@ -240,18 +219,32 @@ const isLastInputOperator = () => {
     return isLastInputOperator;
 }
 
+
+/**
+ * Prevents the user from adding more than one decimal to a number
+ */
 const disableDecimal = () => {
     DECIMAL_CLICKED = true;
     const decimal = document.querySelector("#decimal");
     decimal.disabled = true;
 };
 
+
+/**
+ * Called after an answer has been output to the screen to allow users to add a decimal to 
+ * the result of the last equation
+ */
 const enableDecimal = () => {
     DECIMAL_CLICKED = false;
     const decimal = document.querySelector("#decimal");
     decimal.disabled = false;
 }
 
+
+/**
+ * Handled separately from the operators to clearly separate it's ID and functionality (though it's mostly the same)
+ * @param {String} decimal 
+ */
 const handleDecimalClick = (decimal) => {
     const inputDiv = document.querySelector("#userInput");
     // Create the new Operator element
@@ -263,6 +256,7 @@ const handleDecimalClick = (decimal) => {
     disableDecimal();
 }
 
+
 /**
  * Operator onClick handler
  * Sends calculation as if an equal sign was clicked when the operator is the second operator chosen
@@ -270,7 +264,6 @@ const handleDecimalClick = (decimal) => {
  * @param {Obj} operator Event object for operator click
  */
 const handleOperatorClick = (operator) => {
-    // TODO: Disabled the decimal after it's been clicked once
     if (isLastInputOperator()) {
         const inputElements = document.querySelectorAll("#inputVal");
         const userInput = [...inputElements];
@@ -291,10 +284,6 @@ const handleOperatorClick = (operator) => {
     inputOperator.textContent = operatorString;
     inputOperator.id = "inputVal";
 
-    // if (operatorString === "." && DECIMAL_CLICKED === false) {
-    //     disableDecimal();
-    // } 
-    // console.log("operator: ", operatorString);
     const isEqualOnScreen = checkAnsOutput();
 
     if (OPERATORS.includes(operatorString) && !OPERATOR_CHOSEN) {
@@ -355,39 +344,39 @@ const handleEqualSign = () => {
     const parsedChoices = parseInputNodesToString(choiceArr);
 
     const answer = getMathAnswer(parsedChoices);
+    if (answer === undefined) return;
 
-    const userInputDiv = document.querySelector("#userInput");
-    const ansOutput = document.createElement("span");
-    ansOutput.id = "ansOutput";
-    ansOutput.textContent = " = " + answer;
-    userInputDiv.appendChild(ansOutput);
+    displayAnswer(answer);
 
     enableDecimal();
 }
+
 
 /**
  * Does a full clear of the board and resets the operator flag
  * 
  * This is for the Clear button so should reset the board. The OPERATOR_CHOSEN flag will be set differently
  * depending on the use case of the clearScreen() function so we're setting it here also
- * 
- * TODO: Implement a backspace
  */
 const handleAllClearClick = () => {
     clearScreen();
     OPERATOR_CHOSEN = false;
 }
 
+
+/**
+ * onClick handler for the backspace button
+ */
 const handleClearClick = () => {
     backspace();
 }
+
 
 /**
  * Builds the number pad for users to click numbers
  * Need to add an eventListener and a function to take the numbers and do something with them
  */
 const buildNums = () => {
-    let numOrder = 0;
     const operators = ["+", "-", "*", "/"];
     const numberBoard = document.querySelector("#numberBoard");
     
@@ -444,5 +433,6 @@ const buildNums = () => {
     clearButton.addEventListener("click", handleClearClick);
     numberBoard.appendChild(clearButton);
 }
+
 
 buildNums();
