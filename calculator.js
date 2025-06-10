@@ -103,6 +103,15 @@ const backspace = () => {
     const ansOutput = document.querySelector("#ansOutput");
     const input = [...userInputVals];
     ansOutput && input.push(ansOutput);
+    
+    // Can't backspace an empty screen
+    if (input.length === 0) return;
+
+    // Reset the DIVIDE BY ZERO FLAG if that's getting deleted so we can continue doing more math
+    if (DIVIDE_BY_ZERO === true) {
+        DIVIDE_BY_ZERO = false;
+    }
+
     const last = input[input.length-1];
     if (OPERATORS.includes(last.textContent)) {
         OPERATOR_CHOSEN = false;
@@ -291,6 +300,7 @@ const handleOperatorClick = (operator) => {
     const isEqualOnScreen = checkAnsOutput();
 
     if (OPERATORS.includes(operatorString) && !OPERATOR_CHOSEN) {
+
         OPERATOR_CHOSEN = true;
         inputDiv.appendChild(inputOperator);
     } else if (OPERATORS.includes(operatorString) && OPERATOR_CHOSEN) {
@@ -345,10 +355,10 @@ const handleEqualSign = () => {
     // grab all the numbers off the screen
     const userChoices = document.querySelectorAll("#inputVal");
     const choiceArr = [...userChoices];
-    
     const parsedChoices = parseInputNodesToString(choiceArr);
 
     const answer = getMathAnswer(parsedChoices);
+
     if (answer === undefined) return;
 
     displayAnswer(answer);
