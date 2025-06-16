@@ -193,61 +193,22 @@ const handleNumberClick = (input) => {
 };
 
 const handleKeyPress = (event) => {
-    switch (event.key) {
-        case "0":
-            doTheNumberThing(event.key);
-            break;
-        case "1":
-            doTheNumberThing(event.key);
-            break;
-        case "2":
-            doTheNumberThing(event.key);
-            break;
-        case "3":
-            doTheNumberThing(event.key);
-            break;
-        case "4":
-            doTheNumberThing(event.key);
-            break;
-        case "5":
-            doTheNumberThing(event.key);
-            break;
-        case "6":
-            doTheNumberThing(event.key);
-            break;
-        case "7":
-            doTheNumberThing(event.key);
-            break;
-        case "8":
-            doTheNumberThing(event.key);
-            break;
-        case "9":
-            doTheNumberThing(event.key);
-            break;
-        case "+":
-            doTheOperatorThing(event.key);
-            break;
-        case "-":
-            doTheOperatorThing(event.key);
-            break;
-        case "*":
-            doTheOperatorThing(event.key);
-            break;
-        case "/":
-            doTheOperatorThing(event.key);
-            break;
-        case ".":
-            if (!DECIMAL_CLICKED) {
-               doTheDecimalThing(event.key);
-                event.preventDefault(); 
-            }
-            break;
-        case "Enter":
-            handleEqualSign();
-            break;
-        default:
-            console.log("found the default:", event.key);
+    // TODO: Add the backspace
+    // TODO: Adding numbers to the result with a keypress doesn't start a new calculation
+    const keyInput = event.key;
+    const parsedKeyInput = Number.parseInt(keyInput);
+    if ((parsedKeyInput >= 0 || parsedKeyInput <= 9) && !OPERATORS.includes(keyInput)) {
+        doTheNumberThing(keyInput);
+    } else if (OPERATORS.includes(keyInput)) {
+        doTheOperatorThing(keyInput);
+    } else if (keyInput === "." && DECIMAL_CLICKED === false) {
+        doTheDecimalThing(); 
+        event.preventDefault();
+    } else if (keyInput === "Enter") {
+        handleEqualSign();
     }
+
+    return;
 };
 
 
