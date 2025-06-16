@@ -187,100 +187,63 @@ const handleNumberClick = (input) => {
         OPERATOR_CHOSEN = false;
     }
 
-    // const inputDiv = document.querySelector("#userInput");
-    // const inputVal = document.createElement("span");
-    // inputVal.textContent = input.target.textContent; // get the value of the number clicked
-    // inputVal.id = "inputVal";
-    // inputVal.className = "numOutput";
-    // inputDiv.appendChild(inputVal);
     doTheNumberThing(input.target.textContent);
 
     input.target.blur();
 };
 
 const handleKeyPress = (event) => {
-    console.log("key press: ");
     switch (event.key) {
         case "0":
-            console.log(event.key);
             doTheNumberThing(event.key);
             break;
         case "1":
-            console.log(event.key);
-            // handleNumberClick();
             doTheNumberThing(event.key);
             break;
         case "2":
-            console.log(event.key);
-            // handleNumberClick();
             doTheNumberThing(event.key);
             break;
         case "3":
-            console.log(event.key);
-            // handleNumberClick();
             doTheNumberThing(event.key);
             break;
         case "4":
-            console.log(event.key);
-            // handleNumberClick();
             doTheNumberThing(event.key);
             break;
         case "5":
-            console.log(event.key);
-            // handleNumberClick();
             doTheNumberThing(event.key);
             break;
         case "6":
-            console.log(event.key);
-            // handleNumberClick();
             doTheNumberThing(event.key);
             break;
         case "7":
-            console.log(event.key);
-            // handleNumberClick();
             doTheNumberThing(event.key);
             break;
         case "8":
-            console.log(event.key);
-            // handleNumberClick();
             doTheNumberThing(event.key);
             break;
         case "9":
-            console.log(event.key);
-            // handleNumberClick();
             doTheNumberThing(event.key);
             break;
         case "+":
-            console.log(event.key);
-            // handleOperatorClick();
             doTheOperatorThing(event.key);
             break;
         case "-":
-            console.log(event.key);
-            // handleOperatorClick();
             doTheOperatorThing(event.key);
             break;
         case "*":
-            console.log(event.key);
-            // handleOperatorClick();
             doTheOperatorThing(event.key);
             break;
         case "/":
-            console.log(event.key);
-            // handleOperatorClick();
             doTheOperatorThing(event.key);
             break;
         case ".":
-            console.log(event.key);
             if (!DECIMAL_CLICKED) {
                doTheDecimalThing(event.key);
                 event.preventDefault(); 
             }
             break;
         case "Enter":
-            console.log(event.key);
             handleEqualSign();
-            // doTheEqualThing(); // I don't think I need to do this
             break;
         default:
             console.log("found the default:", event.key);
@@ -379,15 +342,7 @@ const doTheDecimalThing = (decimal) => {
  * @param {String} decimal 
  */
 const handleDecimalClick = (decimal) => {
-    // const inputDiv = document.querySelector("#userInput");
-    // Create the new Operator element
-    // const decimalString = decimal.target.textContent;
-    // const inputDecimal = document.createElement("span");
-    // inputDecimal.textContent = decimalString;
-    // inputDecimal.id = "inputVal";
-    // inputDecimal.className = "operatorOutput";
-    // inputDiv.appendChild(inputDecimal);
-    // disableDecimal();
+    // TODO: When you hit a decimal on an answer, it should append the next number to the decimal
     doTheDecimalThing(decimal.target.textContent);
 
     // Release focus of the button to enable key presses
@@ -474,71 +429,6 @@ const doTheOperatorThing = (operatorVal) => {
  */
 const handleOperatorClick = (operator) => {
     doTheOperatorThing(operator.target.textContent);
-    // if (isScreenEmpty()) return;
-    // // what the fuck is this doing?????
-    // if (isLastInputOperator()) {
-    //     const inputElements = document.querySelectorAll("#inputVal");
-    //     const userInput = [...inputElements];
-    //     const prevOperator = userInput[userInput.length-1];
-
-    //     if (operator.target.textContent !== prevOperator.textContent) {
-    //         prevOperator.parentElement.removeChild(prevOperator);
-    //         OPERATOR_CHOSEN = false; // Flips the flag so it will drop into the first part and just append the new operator element
-    //     } else {
-    //         return; // Break, it's the same operator without a 2nd number so we don't try to do the math
-    //     }  
-    // }
-
-    // const inputDiv = document.querySelector("#userInput");
-    // // Create the new Operator element
-    // const operatorString = operator.target.textContent;
-    // const inputOperator = document.createElement("span");
-    // inputOperator.textContent = operatorString;
-    // inputOperator.id = "inputVal";
-    // inputOperator.className = "operatorOutput";
-
-    // const isEqualOnScreen = checkAnsOutput();
-
-    // if (OPERATORS.includes(operatorString) && !OPERATOR_CHOSEN) {
-
-    //     OPERATOR_CHOSEN = true;
-    //     inputDiv.appendChild(inputOperator);
-    // } else if (OPERATORS.includes(operatorString) && OPERATOR_CHOSEN) {
-    //     // This works to trigger the equals after a second operator click. 
-    //     // But you need refactor so you're not calling an operator but just a math function
-    //     if (!isEqualOnScreen) {
-    //         // If there is not an equal sign on the screen, then we have 2 operands and the user
-    //         // wants to do another calculation
-    //         // If there is an "=" on the screen, the user wants to use the result of the last calculation
-    //         // but we don't have 2 operands
-    //         handleEqualSign();
-
-    //     }
-
-    //     // Put this here to prevent the next operator from being used
-    //     if (DIVIDE_BY_ZERO === true) {
-    //         return;
-    //     }
-
-    //     // Get the result of the last equation from the screen
-    //     const ansOutput = document.querySelector("#ansOutput");
-    //     const ans = ansOutput.textContent.split(" = ")[1];
-
-    //     // Clear the screen so you can do the math in the dumb way that you're currently doing it
-    //     clearScreen();
-
-    //     // Create a new element to hold the new operand
-    //     const newOperand = document.createElement("span");
-    //     newOperand.textContent = ans;
-    //     newOperand.id = "inputVal";
-    //     newOperand.className = "numOutput";
-
-    //     // Add the new operand element to DOM list
-    //     inputDiv.appendChild(newOperand)
-
-    //     // Add the new operator to the new operand
-    //     inputDiv.appendChild(inputOperator);
-    // }
 
     // Release focus of the button to enable key presses
     if (operator) {
