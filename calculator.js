@@ -298,9 +298,7 @@ const enableDecimal = () => {
 }
 
 
-const doTheDecimalThing = (decimal) => {
-    if (isScreenEmpty()) return;
-    
+const doTheDecimalThing = (decimal) => {  
     // Create the decimal element that you'll append to something later
     const decimalString = decimal;
     const inputDecimal = document.createElement("span");
@@ -339,6 +337,13 @@ const doTheDecimalThing = (decimal) => {
         
         // Get the parent div
         const inputDiv = document.querySelector("#userInput");
+
+        // Create an element with a "0" so you can start the equation over with "0." instead of just "."
+        const startingZero = document.createElement("span");
+        startingZero.textContent = "0";
+        startingZero.id = "inputVal";
+        startingZero.className = "numOutput";
+        inputDiv.appendChild(startingZero);
         inputDiv.appendChild(inputDecimal);
         // This lets me add a decimal to the result of the previous equation and then follow up with an operator 
         // It's required because you're grabbing the answer from the 
@@ -347,6 +352,15 @@ const doTheDecimalThing = (decimal) => {
     } else {
         // Just a normal adding the decimal to the number
         const inputDiv = document.querySelector("#userInput");
+        if (isScreenEmpty()) {
+            // Create an element with a "0" so you can start the equation over with "0." instead of just "."
+            const startingZero = document.createElement("span");
+            startingZero.textContent = "0";
+            startingZero.id = "inputVal";
+            startingZero.className = "numOutput";
+            inputDiv.appendChild(startingZero);
+            // inputDiv.appendChild(inputDecimal);
+        }
         inputDiv.appendChild(inputDecimal);
     }
     disableDecimal();
