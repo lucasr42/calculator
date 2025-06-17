@@ -275,6 +275,17 @@ const isLastInputOperator = () => {
     return isLastInputOperator;
 }
 
+/**
+ * Used to ensure that an operator can't be clicked when a decimal was the last thing clicked
+ * @returns 
+ */
+const isLastInputDecimal = () => {
+    const inputElements = document.querySelectorAll("#inputVal");
+    const userInput = [...inputElements];
+    const isLastInputDecimal = userInput[userInput.length - 1].textContent === ".";
+    return isLastInputDecimal;
+}
+
 
 /**
  * Prevents the user from adding more than one decimal to a number
@@ -381,8 +392,9 @@ const handleDecimalClick = (decimal) => {
 
 
 const doTheOperatorThing = (operatorVal) => {
-    if (isScreenEmpty()) return;
-    // what the fuck is this doing?????
+    if (isScreenEmpty() || isLastInputDecimal()) return;
+
+    // This lets the user change the operator only when the operator is the last input
     if (isLastInputOperator()) {
         const inputElements = document.querySelectorAll("#inputVal");
         const userInput = [...inputElements];
@@ -409,7 +421,8 @@ const doTheOperatorThing = (operatorVal) => {
     if (OPERATORS.includes(operatorString) && !OPERATOR_CHOSEN) {
         OPERATOR_CHOSEN = true;
         inputDiv.appendChild(inputOperator);
-    } else if (OPERATORS.includes(operatorString) && OPERATOR_CHOSEN) {``
+        enableDecimal();
+    } else if (OPERATORS.includes(operatorString) && OPERATOR_CHOSEN) {
         // This works to trigger the equals after a second operator click. 
         // But you need refactor so you're not calling an operator but just a math function
         if (!isEqualOnScreen) {
@@ -445,6 +458,7 @@ const doTheOperatorThing = (operatorVal) => {
             inputDiv.appendChild(newOperand)
         } else {
             CONTINUED_WITH_DECIMAL_AFTER_ANSWER = false;
+            enableDecimal();
         }
 
 
