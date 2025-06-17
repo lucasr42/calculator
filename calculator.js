@@ -363,7 +363,7 @@ const doTheDecimalThing = (decimal) => {
     } else {
         // Just a normal adding the decimal to the number
         const inputDiv = document.querySelector("#userInput");
-        if (isScreenEmpty()) {
+        if (isScreenEmpty() || isLastInputOperator()) {
             // Create an element with a "0" so you can start the equation over with "0." instead of just "."
             const startingZero = document.createElement("span");
             startingZero.textContent = "0";
