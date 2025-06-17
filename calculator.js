@@ -233,14 +233,39 @@ const isScreenEmpty = () => {
 const checkAnsOutput = () => {
     const ansOutput = document.querySelector("#ansOutput");
     return Boolean(ansOutput);
-}
+};
 
+
+/**
+ * Used to determine if the result of an equation has a decimal in it.
+ * This lets me keep the decimal disabled so the user can't add a decimal like 2.5.0
+ * @returns 
+ */
 const checkDecimalInAnswer = () => {
     const ansOutput = document.querySelector("#ansOutput");
-    console.log("checking for decimals: ", ansOutput);
-    const found = ansOutput.textContent.includes(".");
-    console.log("is decimal in answer?", found);
-    return found;
+    return ansOutput.textContent.includes(".");
+};
+
+
+/**
+ * Returns the trailing elements after an equal sign
+ * Used to start a new equation with the answer from the last one
+ * @returns Span element with the answer from the last equation
+ */
+const getAnswerOutput = () => {
+    const ansOutput = document.querySelector("#ansOutput");
+    const ans = ansOutput.textContent.split(" = ")[1]; // Need to get all the values after the equal sign
+
+    // Clear the screen so you can do the math in the dumb way that you're currently doing it
+    clearScreen();
+
+    // Create a new element to hold the new operand
+    const newOperand = document.createElement("span");
+    newOperand.textContent = ans;
+    newOperand.id = "inputVal";
+    newOperand.className = "numOutput";
+
+    return newOperand;
 }
 
 
@@ -317,25 +342,20 @@ const doTheDecimalThing = (decimal) => {
     inputDecimal.id = "inputVal";
     inputDecimal.className = "operatorOutput";
 
-    // if the answer is on the screen, append the decimal to the answer
+    // Create an element with a "0" so you can start the equation over with "0." instead of just "."
+    const getStartingZero = () => {
+        const zeroElement = document.createElement("span");
+        zeroElement.textContent = "0";
+        zeroElement.id = "inputVal";
+        zeroElement.className = "numOutput";
+        return zeroElement;
+    }
+
+    // The answer is on the screen, append the decimal to the answer
     if (checkAnsOutput() && !checkDecimalInAnswer()) {
-        console.log("there's an answer on the screen without a decimal in it");
-        // get the answer
-        const ansOutput = document.querySelector("#ansOutput");
-        // split the answer value from the element
-        const ans = ansOutput.textContent.split(" = ")[1];
-
-        // create a new element with the answer value
-        const ansOutputValElement = document.createElement("span");
-        ansOutputValElement.textContent = ans;
-        ansOutputValElement.id = "inputVal";
-        ansOutputValElement.className = "ansOutput";
-
-        // Remove the last equation from the screen
-        clearScreen();
-
         // Get the parent div
         const inputDiv = document.querySelector("#userInput");
+        const ansOutputValElement = getAnswerOutput();
         // Add the number and decimal elements to the parent input div
         inputDiv.appendChild(ansOutputValElement);
         inputDiv.appendChild(inputDecimal);
@@ -349,11 +369,7 @@ const doTheDecimalThing = (decimal) => {
         // Get the parent div
         const inputDiv = document.querySelector("#userInput");
 
-        // Create an element with a "0" so you can start the equation over with "0." instead of just "."
-        const startingZero = document.createElement("span");
-        startingZero.textContent = "0";
-        startingZero.id = "inputVal";
-        startingZero.className = "numOutput";
+        const startingZero = getStartingZero(); // Appends the initial zero to a decimal to make it pretty
         inputDiv.appendChild(startingZero);
         inputDiv.appendChild(inputDecimal);
         // This lets me add a decimal to the result of the previous equation and then follow up with an operator 
@@ -364,13 +380,8 @@ const doTheDecimalThing = (decimal) => {
         // Just a normal adding the decimal to the number
         const inputDiv = document.querySelector("#userInput");
         if (isScreenEmpty() || isLastInputOperator()) {
-            // Create an element with a "0" so you can start the equation over with "0." instead of just "."
-            const startingZero = document.createElement("span");
-            startingZero.textContent = "0";
-            startingZero.id = "inputVal";
-            startingZero.className = "numOutput";
+            const startingZero = getStartingZero();
             inputDiv.appendChild(startingZero);
-            // inputDiv.appendChild(inputDecimal);
         }
         inputDiv.appendChild(inputDecimal);
     }
@@ -421,7 +432,6 @@ const doTheOperatorThing = (operatorVal) => {
     if (OPERATORS.includes(operatorString) && !OPERATOR_CHOSEN) {
         OPERATOR_CHOSEN = true;
         inputDiv.appendChild(inputOperator);
-        enableDecimal();
     } else if (OPERATORS.includes(operatorString) && OPERATOR_CHOSEN) {
         // This works to trigger the equals after a second operator click. 
         // But you need refactor so you're not calling an operator but just a math function
@@ -439,32 +449,21 @@ const doTheOperatorThing = (operatorVal) => {
             return;
         }
 
-        // If the user hits a decimal on the result of the answer, we'll handle this part in the decimal handler
+        // If the user hits a decimal on the result of the answer, we handle this part in the decimal handler
         if (!CONTINUED_WITH_DECIMAL_AFTER_ANSWER) {
             // Get the result of the last equation from the screen
-            const ansOutput = document.querySelector("#ansOutput");
-            const ans = ansOutput.textContent.split(" = ")[1]; // Need to get all the values after the equal sign
-
-            // Clear the screen so you can do the math in the dumb way that you're currently doing it
-            clearScreen();
-
-            // Create a new element to hold the new operand
-            const newOperand = document.createElement("span");
-            newOperand.textContent = ans;
-            newOperand.id = "inputVal";
-            newOperand.className = "numOutput";
-
+            const newOperand = getAnswerOutput();
             // Add the new operand element to DOM list
             inputDiv.appendChild(newOperand)
-        } else {
-            CONTINUED_WITH_DECIMAL_AFTER_ANSWER = false;
-            enableDecimal();
-        }
-
+        } 
 
         // Add the new operator to the new operand
         inputDiv.appendChild(inputOperator);
     }
+
+    // Reset the decimal button and flags so the user can click as expected, like after an answer or as the first input of an operand
+    CONTINUED_WITH_DECIMAL_AFTER_ANSWER = false;
+    enableDecimal();
 };
 
 /**
