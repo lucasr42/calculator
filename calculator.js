@@ -3,6 +3,7 @@ const OPERATORS = ["+", "-", "*", "/"];
 let OPERATOR_CHOSEN = false;
 let DIVIDE_BY_ZERO = false;
 let DECIMAL_CLICKED = false;
+let CONTINUED_WITH_DECIMAL_AFTER_ANSWER = false;
 
 
 const add = (num1, num2) => {
@@ -179,7 +180,9 @@ const doTheNumberThing = (number) => {
  * @param {Obj} input Event object for onclick to access the number
  */
 const handleNumberClick = (input) => {
-    if (checkAnsOutput()) {
+    const number = input.target.textContent;
+    // Adding the !DECIMAL_CLICKED here lets you append to an answer so that's what you want
+    if (checkAnsOutput() && !DECIMAL_CLICKED) {
         // Clear the screen so we can start a new calculation when a number is chosen
         // after a previous calculation is complete
         clearScreen();
@@ -187,7 +190,7 @@ const handleNumberClick = (input) => {
         OPERATOR_CHOSEN = false;
     }
 
-    doTheNumberThing(input.target.textContent);
+    doTheNumberThing(number);
 
     input.target.blur();
 };
@@ -288,13 +291,43 @@ const enableDecimal = () => {
 
 
 const doTheDecimalThing = (decimal) => {
-    const inputDiv = document.querySelector("#userInput");
+    if (isScreenEmpty()) return;
+    
+    // Create the decimal element that you'll append to something later
     const decimalString = decimal;
     const inputDecimal = document.createElement("span");
     inputDecimal.textContent = decimalString;
     inputDecimal.id = "inputVal";
     inputDecimal.className = "operatorOutput";
-    inputDiv.appendChild(inputDecimal);
+
+    // if the answer is on the screen, append the decimal to the answer
+    if (checkAnsOutput()) {
+        // get the answer
+        const ansOutput = document.querySelector("#ansOutput");
+        // split the answer value from the element
+        const ans = ansOutput.textContent.split(" = ")[1];
+
+        // create a new element with the answer value
+        const ansOutputValElement = document.createElement("span");
+        ansOutputValElement.textContent = ans;
+        ansOutputValElement.id = "inputVal";
+        ansOutputValElement.className = "ansOutput";
+
+        // Remove the last equation from the screen
+        clearScreen();
+
+        // Get the parent div
+        const inputDiv = document.querySelector("#userInput");
+        // Add the number and decimal elements to the parent input div
+        inputDiv.appendChild(ansOutputValElement);
+        inputDiv.appendChild(inputDecimal);
+
+        CONTINUED_WITH_DECIMAL_AFTER_ANSWER = true;
+    } else {
+        // Just a normal adding the decimal to the number
+        const inputDiv = document.querySelector("#userInput");
+        inputDiv.appendChild(inputDecimal);
+    }
     disableDecimal();
 }
 
@@ -303,7 +336,6 @@ const doTheDecimalThing = (decimal) => {
  * @param {String} decimal 
  */
 const handleDecimalClick = (decimal) => {
-    // TODO: When you hit a decimal on an answer, it should append the next number to the decimal
     doTheDecimalThing(decimal.target.textContent);
 
     // Release focus of the button to enable key presses
@@ -331,7 +363,6 @@ const doTheOperatorThing = (operatorVal) => {
 
     const inputDiv = document.querySelector("#userInput");
     // Create the new Operator element
-    // const operatorString = operator.target.textContent;
     const operatorString = operatorVal;
     const inputOperator = document.createElement("span");
     inputOperator.textContent = operatorString;
@@ -341,10 +372,9 @@ const doTheOperatorThing = (operatorVal) => {
     const isEqualOnScreen = checkAnsOutput();
 
     if (OPERATORS.includes(operatorString) && !OPERATOR_CHOSEN) {
-
         OPERATOR_CHOSEN = true;
         inputDiv.appendChild(inputOperator);
-    } else if (OPERATORS.includes(operatorString) && OPERATOR_CHOSEN) {
+    } else if (OPERATORS.includes(operatorString) && OPERATOR_CHOSEN) {``
         // This works to trigger the equals after a second operator click. 
         // But you need refactor so you're not calling an operator but just a math function
         if (!isEqualOnScreen) {
@@ -361,21 +391,27 @@ const doTheOperatorThing = (operatorVal) => {
             return;
         }
 
-        // Get the result of the last equation from the screen
-        const ansOutput = document.querySelector("#ansOutput");
-        const ans = ansOutput.textContent.split(" = ")[1];
+        // If the user hits a decimal on the result of the answer, we'll handle this part in the decimal handler
+        if (!CONTINUED_WITH_DECIMAL_AFTER_ANSWER) {
+            // Get the result of the last equation from the screen
+            const ansOutput = document.querySelector("#ansOutput");
+            const ans = ansOutput.textContent.split(" = ")[1]; // Need to get all the values after the equal sign
 
-        // Clear the screen so you can do the math in the dumb way that you're currently doing it
-        clearScreen();
+            // Clear the screen so you can do the math in the dumb way that you're currently doing it
+            clearScreen();
 
-        // Create a new element to hold the new operand
-        const newOperand = document.createElement("span");
-        newOperand.textContent = ans;
-        newOperand.id = "inputVal";
-        newOperand.className = "numOutput";
+            // Create a new element to hold the new operand
+            const newOperand = document.createElement("span");
+            newOperand.textContent = ans;
+            newOperand.id = "inputVal";
+            newOperand.className = "numOutput";
 
-        // Add the new operand element to DOM list
-        inputDiv.appendChild(newOperand)
+            // Add the new operand element to DOM list
+            inputDiv.appendChild(newOperand)
+        } else {
+            CONTINUED_WITH_DECIMAL_AFTER_ANSWER = false;
+        }
+
 
         // Add the new operator to the new operand
         inputDiv.appendChild(inputOperator);
