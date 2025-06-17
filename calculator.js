@@ -235,6 +235,14 @@ const checkAnsOutput = () => {
     return Boolean(ansOutput);
 }
 
+const checkDecimalInAnswer = () => {
+    const ansOutput = document.querySelector("#ansOutput");
+    console.log("checking for decimals: ", ansOutput);
+    const found = ansOutput.textContent.includes(".");
+    console.log("is decimal in answer?", found);
+    return found;
+}
+
 
 /**
  * 
@@ -301,7 +309,8 @@ const doTheDecimalThing = (decimal) => {
     inputDecimal.className = "operatorOutput";
 
     // if the answer is on the screen, append the decimal to the answer
-    if (checkAnsOutput()) {
+    if (checkAnsOutput() && !checkDecimalInAnswer()) {
+        console.log("there's an answer on the screen without a decimal in it");
         // get the answer
         const ansOutput = document.querySelector("#ansOutput");
         // split the answer value from the element
@@ -322,6 +331,18 @@ const doTheDecimalThing = (decimal) => {
         inputDiv.appendChild(ansOutputValElement);
         inputDiv.appendChild(inputDecimal);
 
+        CONTINUED_WITH_DECIMAL_AFTER_ANSWER = true;
+    } else if (checkAnsOutput() && checkDecimalInAnswer()) {
+        // Starting a new calculation with the decimal as the first number;
+        console.log("there's an answer on the screen with a decimal in it. gotta clear the screen and start fresh with the decimal");
+        clearScreen();
+        
+        // Get the parent div
+        const inputDiv = document.querySelector("#userInput");
+        inputDiv.appendChild(inputDecimal);
+        // This lets me add a decimal to the result of the previous equation and then follow up with an operator 
+        // It's required because you're grabbing the answer from the 
+        // screen in the operator function and you're also doing it here
         CONTINUED_WITH_DECIMAL_AFTER_ANSWER = true;
     } else {
         // Just a normal adding the decimal to the number
@@ -441,6 +462,7 @@ const handleOperatorClick = (operator) => {
  * This function needs to also trigger the actual math functions
  */
 const handleEqualSign = (event) => {
+
     if (isScreenEmpty() || isLastInputOperator() || isOnlyNumber() || checkAnsOutput()) {
         return;
     }
@@ -454,8 +476,16 @@ const handleEqualSign = (event) => {
     if (answer === undefined) return;
 
     displayAnswer(answer);
-
+    // if (!checkDecimalInAnswer()) {
+    //     console.log("in the equal handler. there is a decimal in the answer. now what?");
+    //     enableDecimal();
+    // } else {
+    //     // disableDecimal();
+    //     // if they click a decimal, the screen should clear
+    //     console.log('a decimal was clicked after an answer');
+    // }
     enableDecimal();
+    
 
     // Release focus of the button to enable key presses
     // You're using this equal sign handler to perform the equal sign duty in more than one place
