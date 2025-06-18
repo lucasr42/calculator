@@ -183,6 +183,7 @@ const handleNumberClick = (input) => {
     const number = input.target.textContent;
     // Adding the !DECIMAL_CLICKED here lets you append to an answer so that's what you want
     if (checkAnsOutput() && !DECIMAL_CLICKED) {
+        console.log("in this funny little branch");
         // Clear the screen so we can start a new calculation when a number is chosen
         // after a previous calculation is complete
         clearScreen();
@@ -207,6 +208,12 @@ const handleKeyPress = (event) => {
     const parsedKeyInput = Number.parseInt(keyInput);
 
     if ((parsedKeyInput >= 0 || parsedKeyInput <= 9) && !OPERATORS.includes(keyInput)) {
+        // This lets you start the equation over with a new number instead of appending to the screen
+        // if a user clicks a new number
+        if (checkAnsOutput() && !DECIMAL_CLICKED) {
+            clearScreen();
+            OPERATOR_CHOSEN = false;
+        }
         doTheNumberThing(keyInput);
     } else if (OPERATORS.includes(keyInput)) {
         doTheOperatorThing(keyInput);
