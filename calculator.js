@@ -192,23 +192,30 @@ const handleNumberClick = (input) => {
 
     doTheNumberThing(number);
 
+    // Release focus of the button to enable key presses
     input.target.blur();
 };
 
+
+/**
+ * Forwards keyboard input to the correct function
+ * @param {*} event 
+ * @returns 
+ */
 const handleKeyPress = (event) => {
-    // TODO: Add the backspace
-    // TODO: Adding numbers to the result with a keypress doesn't start a new calculation
     const keyInput = event.key;
     const parsedKeyInput = Number.parseInt(keyInput);
+
     if ((parsedKeyInput >= 0 || parsedKeyInput <= 9) && !OPERATORS.includes(keyInput)) {
         doTheNumberThing(keyInput);
     } else if (OPERATORS.includes(keyInput)) {
         doTheOperatorThing(keyInput);
     } else if (keyInput === "." && DECIMAL_CLICKED === false) {
-        doTheDecimalThing(); 
-        event.preventDefault();
+        doTheDecimalThing(keyInput); 
     } else if (keyInput === "Enter") {
         handleEqualSign();
+    } else if (keyInput === "Backspace") {
+        backspace();
     }
 
     return;
@@ -363,7 +370,6 @@ const doTheDecimalThing = (decimal) => {
         CONTINUED_WITH_DECIMAL_AFTER_ANSWER = true;
     } else if (checkAnsOutput() && checkDecimalInAnswer()) {
         // Starting a new calculation with the decimal as the first number;
-        console.log("there's an answer on the screen with a decimal in it. gotta clear the screen and start fresh with the decimal");
         clearScreen();
         
         // Get the parent div
@@ -503,14 +509,7 @@ const handleEqualSign = (event) => {
     if (answer === undefined) return;
 
     displayAnswer(answer);
-    // if (!checkDecimalInAnswer()) {
-    //     console.log("in the equal handler. there is a decimal in the answer. now what?");
-    //     enableDecimal();
-    // } else {
-    //     // disableDecimal();
-    //     // if they click a decimal, the screen should clear
-    //     console.log('a decimal was clicked after an answer');
-    // }
+
     enableDecimal();
     
 
@@ -532,6 +531,7 @@ const handleEqualSign = (event) => {
 const handleAllClearClick = (event) => {
     clearScreen();
     OPERATOR_CHOSEN = false;
+    // Release focus of the button to enable key presses
     if (event) {
         event.target.blur();
     }
@@ -543,6 +543,7 @@ const handleAllClearClick = (event) => {
  */
 const handleClearClick = (event) => {
     backspace();
+    // Release focus of the button to enable key presses
     if (event) {
         event.target.blur();
     }
